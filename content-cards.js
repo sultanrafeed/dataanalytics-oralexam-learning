@@ -26,6 +26,10 @@ var CONTENT = window.CONTENT || (window.CONTENT = {});
   Q('prob-2', 'problem-type', 'concepts', "What does 'supervised' mean?", "The model learns from examples where the answer is already known.");
   Q('prob-3', 'problem-type', 'concepts', "What does 'binary' mean here?", "The target has only two classes: 1 or 0.");
 
+  Q('crisp-1', 'crisp-dm', 'concepts', "Name the six CRISP-DM steps.", "Business understanding, data understanding, data preparation, modelling, evaluation, deployment.");
+  B('crisp-2', 'crisp-dm', 'rules', "My one rule: any decision must be made {{without looking at the data that will later be used to test it}}.");
+  Q('crisp-3', 'crisp-dm', 'concepts', "What is the memory trick for CRISP-DM?", "Big Dogs Prefer Meat, Every Day: Business, Data understanding, Preparation, Modelling, Evaluation, Deployment.");
+
   Q('scr-1', 'screening-auc', 'concepts', "What does screening mean in this project?", "Rank people by risk and invite the highest-risk people for a blood test.");
   B('scr-2', 'screening-auc', 'concepts', "AUC {{0.5}} means guessing. AUC {{1.0}} means perfect ranking.");
   S('scr-3', 'screening-auc', 'rules', "Why was ROC AUC your main measure?", "ROC AUC was my main measure, because I treated the model as a screening tool.", "Section 1 (cell 7) says so, and my best test AUC is 0.835.", "AUC measures ranking across every cut-off. For screening the ranking matters first, and the cut-off can be chosen later.");

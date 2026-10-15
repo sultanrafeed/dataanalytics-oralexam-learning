@@ -75,13 +75,46 @@ CONTENT.learn.push(
   say: "It is a supervised binary classification problem. The model learns from labelled survey records and must predict Diabetes_binary for new people.",
   remember: [
     "**Supervised** = the answers are in the data.",
-    "**Binary** = two classes, 1 or 0."
+    "**Binary** = two classes, 1 or 0.",
+    "**Supervised has a Supervisor:** someone gave it the right answers (labels)."
   ],
   point: { cells: [7], text: "Section 1 text: 'This is a supervised binary classification task.'" },
   recall: [
     { q: "What does 'supervised' mean?", a: "The model learns from examples where the answer is already known." },
     { q: "Why is it 'binary'?", a: "The target has only two classes: 1 or 0." },
     { q: "Say the problem type in one sentence.", a: "It is a supervised binary classification problem." }
+  ]
+},
+{
+  id: "crisp-dm", part: "A", title: "CRISP-DM: how I approached the problem",
+  plain: [
+    "**CRISP-DM** (Cross-Industry Standard Process for Data Mining) is the standard recipe for a data project.",
+    "It has six steps: business understanding, data understanding, data preparation, modelling, evaluation and deployment.",
+    "It is a cycle, not a straight line. You often go back a step when you learn something new.",
+    "Analogy: cooking a dinner party. Plan the menu, check the fridge, prepare, cook, taste, then serve."
+  ],
+  project: [
+    "I followed the CRISP-DM steps (report section 2), with one rule the whole way through: **any decision must be made without looking at the data that will later be used to test it.**",
+    { list: [
+      "**Check the data:** look at every column, and check if any column predicts the target for the wrong reason.",
+      "**Split the data once:** 20% (12,725) as a test set, untouched. The other 80% (50,897) is the development set.",
+      "**Compare feature sets first**, before any tuning.",
+      "**Tune one model for each method**, with 5-fold cross-validation.",
+      "**Choose the model with a fixed rule**, set before seeing any test results.",
+      "**Test once and explain:** score all tuned models on the test set, then look inside the chosen model."
+    ] },
+    "The notebook's first cell maps its 8 sections to these steps and to the report (cell 0)."
+  ],
+  say: "I followed the CRISP-DM steps, with one rule the whole way through: no decision was made by looking at the data that would later be used to test it.",
+  remember: [
+    "**Big Dogs Prefer Meat, Every Day** = Business, Data understanding, Preparation, Modelling, Evaluation, Deployment.",
+    "**One rule: never peek at the test data.**"
+  ],
+  point: { cells: [0], text: "The table in the first notebook cell: each section, what it does, and which report part it supports." },
+  recall: [
+    { q: "Name the six CRISP-DM steps.", a: "Business understanding, data understanding, data preparation, modelling, evaluation, deployment." },
+    { q: "What one rule did you keep the whole way through?", a: "Any decision must be made without looking at the data that will later be used to test it." },
+    { q: "Why is CRISP-DM called a cycle?", a: "You often go back a step when you learn something new." }
   ]
 },
 {
@@ -384,7 +417,8 @@ CONTENT.learn.push(
   say: "I used z-score, not min-max. BMI has a long right tail, so min-max squashes most values into a narrow range. Z-score handles that better, as I showed in AT2.",
   remember: [
     "**Min-max: the max sets the scale. Z-score: the mean and SD set it.**",
-    "Long tail → **z-score**."
+    "Long tail → **z-score**.",
+    "**Min-max squeezes into a box. Z-score counts steps from average.**"
   ],
   point: { cells: [19], text: "`steps.append(('scale', StandardScaler()))  # z-score scaling`." },
   recall: [
@@ -432,7 +466,8 @@ CONTENT.learn.push(
   say: "I one-hot encoded the ordinal codes for linear models only. A linear model treats Age code 13 as 13 times code 1, which forces a straight line. One-hot gives each band its own weight. Trees can split anywhere, so they don't need it.",
   remember: [
     "**Linear needs one-hot. Trees don't.**",
-    "One-hot = **each band gets its own weight.**"
+    "One-hot = **each band gets its own weight.**",
+    "**One light on, all others off.**"
   ],
   point: { cells: [16], text: "The `one_hot(df)` function and its `levels` dictionary." },
   recall: [
@@ -559,7 +594,8 @@ CONTENT.learn.push(
   say: "Mutual information is a filter method that scores each feature alone. Five scored below 0.005, and those are dropped in F3.",
   remember: [
     "**Five below 0.005 → F3.**",
-    "Filter = **each feature alone.**"
+    "Filter = **each feature alone.**",
+    "**Filter = judge alone. Wrapper = try with the model. Embedded = the model decides.**"
   ],
   point: { cells: [18], text: "`low_mi = list(mi[mi < 0.005].index)` and the printed list of 5 features." },
   recall: [
@@ -665,7 +701,8 @@ CONTENT.learn.push(
   say: "My decision tree used entropy, depth 8 and a minimum leaf of 200, with CV AUC 0.816. It was the weakest tuned model, at 0.822 on test. Deep trees memorise the data, so the depth and leaf limits matter.",
   remember: [
     "**Tree = a game of 20 questions.** Depth = how many questions. Leaf = the smallest final group.",
-    "**Entropy, 8, 200 → 0.816.**"
+    "**Entropy, 8, 200 → 0.816.**",
+    "**Entropy = messiness. Pure = 0, a 50/50 mix = 1.**"
   ],
   point: { cells: [30], text: "The tree search: `model__criterion`, `model__max_depth`, `model__min_samples_leaf`, and the output line." },
   recall: [
@@ -692,7 +729,8 @@ CONTENT.learn.push(
   say: "k-NN needed k = 201 with Manhattan distance. Most features are 0/1, so many people are at exactly the same distance. A small k gives noisy votes, and a large k smooths them.",
   remember: [
     "**k = 201, Manhattan, uniform → 0.820.**",
-    "Many 0/1 ties → **big neighbourhood.**"
+    "Many 0/1 ties → **big neighbourhood.**",
+    "**Euclid flies like a bird. Manhattan drives like a taxi.** Small k jumpy, big k blurry."
   ],
   point: { cells: [33, 34], text: "The k-NN search in cell 33 and the 'k vs AUC' plot in cell 34." },
   recall: [
@@ -720,7 +758,8 @@ CONTENT.learn.push(
   say: "Logistic regression is my linear classifier. The best was C = 0.01, strong L2 regularisation, with CV AUC 0.826 and almost no overfitting gap. But it can't find interactions unless I give them, and boosting beat it by a difference the paired test showed is real.",
   remember: [
     "**Small C = small weights.**",
-    "**C 0.01, L2, gap 0.001.**"
+    "**C 0.01, L2, gap 0.001.**",
+    "**Small C = Strict Control** (strong regularisation)."
   ],
   point: { cells: [36], text: "The logistic regression search: `model__C` and `model__penalty`." },
   recall: [
@@ -775,7 +814,8 @@ CONTENT.learn.push(
   say: "For the SVM, the search ran on a 10,000-row sample for speed, but I re-scored the winner on the full data. The sample score of 0.832 was noisy and would have wrongly ranked it first. On the full data it was 0.826.",
   remember: [
     "**Sample 0.832 → full 0.826.**",
-    "Best kernel: **linear, C = 0.01.**"
+    "Best kernel: **linear, C = 0.01.**",
+    "**SVM = the widest street.** Support vectors = the houses on the kerb."
   ],
   point: { cells: [40, 41], text: "`train_size=10000` in cell 40, and the two printed scores in cell 41." },
   recall: [
@@ -903,7 +943,8 @@ CONTENT.learn.push(
   ],
   say: "Bagging trains trees in parallel on bootstrap samples and averages them, which lowers variance. Boosting trains small trees in sequence, each fixing the last one's errors, which lowers bias. Here the errors were mostly bias, so boosting won.",
   remember: [
-    "**Bagging: parallel → variance. Boosting: sequence → bias.**"
+    "**Bagging: parallel → variance. Boosting: sequence → bias.**",
+    "**Boosting fixes Bias** (B and B go together). Bagging fixes the other one, Variance."
   ],
   point: { cells: [42], text: "The Section 4 note before cell 43: 'Bagging ... (lowers variance)' and 'Gradient boosting ... (lowers bias)'." },
   recall: [
@@ -1013,7 +1054,8 @@ CONTENT.learn.push(
   say: "I used GridSearchCV when there were few settings, and RandomizedSearchCV when there were many, like the MLP, random forest and boosting. Random search covers the important settings faster. Every search used the same stratified 5-fold cross-validation and scored ROC AUC.",
   remember: [
     "**Few settings → grid. Many settings → random.**",
-    "Random: **MLP 16, forest 14, boosting 25.**"
+    "Random: **MLP 16, forest 14, boosting 25.**",
+    "**Grid = try every box on the grid. Random = throw darts at the grid.**"
   ],
   point: { cells: [26, 45], text: "The `if random_search:` line in tune(), and `random_search=True, n_iter=25` in the boosting search." },
   recall: [
@@ -1070,7 +1112,8 @@ CONTENT.learn.push(
   say: "For the decision tree I plotted a validation curve. Validation AUC peaks around depth 7 and then falls to 0.66 at depth 25 while training AUC goes to 1.0, which is the bias-variance trade-off.",
   remember: [
     "**Depth 2 too simple, depth 7 best, depth 25 memorises.**",
-    "At depth 25: **train 1.0, validation 0.66.**"
+    "At depth 25: **train 1.0, validation 0.66.**",
+    "**Darts:** tight but off-target = bias. Scattered everywhere = variance."
   ],
   point: { cells: [31], text: "The 'Decision tree: depth vs AUC' plot: the training line rises, the validation line peaks then falls." },
   recall: [
@@ -1242,7 +1285,8 @@ CONTENT.learn.push(
   say: "For screening, a missed case costs more than an extra test, so recall matters more. Lowering the cut-off to 0.27 lifts recall from 79.8% to 93.9%, while precision falls from 73.5% to 65.4%.",
   remember: [
     "**Recall = don't miss. Precision = don't false-alarm.**",
-    "**0.5: 79.8 / 73.5. 0.27: 93.9 / 65.4.**"
+    "**0.5: 79.8 / 73.5. 0.27: 93.9 / 65.4.**",
+    "**Recall = did we catch them all? Precision = were our yeses right?**"
   ],
   point: { cells: [64], text: "The 'Cut-off trade-off' plot: recall falls and precision rises as the cut-off goes up." },
   recall: [
@@ -1267,7 +1311,8 @@ CONTENT.learn.push(
   say: "I chose AUC because this is a screening problem. AUC measures ranking across every cut-off, and the cut-off can be chosen later. My best model's test AUC is 0.835.",
   remember: [
     "**AUC = chance a sick person outranks a healthy one.**",
-    "**0.5 guess, 0.835 mine, 1.0 perfect.**"
+    "**0.5 guess, 0.835 mine, 1.0 perfect.**",
+    "**0.5 = a coin flip.**"
   ],
   point: { cells: [55], text: "The 'ROC curves on the test set' plot, with each AUC in the legend and the dashed random line." },
   recall: [
@@ -1291,7 +1336,8 @@ CONTENT.learn.push(
   ],
   say: "Training data fits the model, the validation folds pick the settings, and the test set is used once at the end for an honest score. I kept 20% aside from the start and scored every model on it once.",
   remember: [
-    "**Train = learn. Validation = choose. Test = judge, once.**"
+    "**Train = learn. Validation = choose. Test = judge, once.**",
+    "**Test set = the sealed exam envelope. Open it once.**"
   ],
   point: { cells: [14, 54], text: "The split in cell 14, and the single test-set scoring in cell 54." },
   recall: [
@@ -1314,7 +1360,8 @@ CONTENT.learn.push(
   ],
   say: "To know if differences were real, I used 1,000 bootstrap samples of the test set for 95% confidence intervals. Boosting's test AUC is 0.835, with a 95% interval from 0.828 to 0.841.",
   remember: [
-    "**1,000 resamples, middle 95%: 0.828 to 0.841.**"
+    "**1,000 resamples, middle 95%: 0.828 to 0.841.**",
+    "**Bootstrap = re-use your own sample to measure its uncertainty.**"
   ],
   point: { cells: [54], text: "`boot_samples` and the `auc_95_ci` column in the test table." },
   recall: [
@@ -1371,7 +1418,8 @@ CONTENT.learn.push(
   say: "Soft voting actually scored 0.0005 higher on test, but a paired bootstrap shows the difference is not real. My rule, set before testing, was: anything within one standard error of the top CV score is a tie, and then choose the simplest. Boosting is one model instead of three.",
   remember: [
     "**0.0030 / √5 = 0.0013 → tie band 0.828.**",
-    "**Tie → simplest → boosting.**"
+    "**Tie → simplest → boosting.**",
+    "**Within one SE = too close to call → pick the simpler.**"
   ],
   point: { cells: [52], text: "`standard_error = top['cv_sd'] / np.sqrt(5)` and the output 'Tied models: Gradient boosting, Soft voting'." },
   recall: [
@@ -1525,7 +1573,8 @@ CONTENT.learn.push(
   say: "In AT2 I typed every attribute. BMI, MentHlth and PhysHlth are ratio. GenHlth, Age, Education and Income are ordinal. The 14 binary flags and Sex are nominal. That is why, in AT3, I one-hot encoded the ordinal codes for linear models.",
   remember: [
     "**NOIR: Nominal, Ordinal, Interval, Ratio.**",
-    "Ratio = **BMI + the two Hlth day counts.**"
+    "Ratio = **BMI + the two Hlth day counts.**",
+    "**Can you say 'twice as much'? Yes = ratio.** NOIR: name → order → add → multiply."
   ],
   point: { cells: [], text: "No AT3 cell. AT2 report section 2.1, Table 1." },
   recall: [
@@ -1552,7 +1601,8 @@ CONTENT.learn.push(
   say: "Equi-depth bins could not be equal because 67% of MentHlth values are 0, and identical values must stay in the same bin, so the first bin is forced to be large. Bin-mean smoothing lowered the variance, and I recommended equi-depth with bin means.",
   remember: [
     "**Width: equal ranges. Depth: equal counts.**",
-    "**Mean smooths down, boundary spreads out.**"
+    "**Mean smooths down, boundary spreads out.**",
+    "**Width = same-size boxes. Depth = same number of people per box.**"
   ],
   point: { cells: [], text: "No AT3 cell. AT2 report section 4.1, Tables 4 to 6." },
   recall: [
@@ -1656,7 +1706,8 @@ CONTENT.learn.push(
   say: "In AT2, k-means with k = 4 found a healthy-looking but high-risk cluster with 63% diabetes. The classes overlapped strongly, which explains why every AT3 model hit a ceiling of about 0.83 AUC.",
   remember: [
     "**k = 4, one hidden-risk cluster at 63%.**",
-    "**Overlap → ceiling about 0.83.**"
+    "**Overlap → ceiling about 0.83.**",
+    "**k-means = the centre is an average. k-medoids = the centre is a real member.**"
   ],
   point: { cells: [], text: "No AT3 cell. AT2 report section 3.3, Table 3." },
   recall: [
@@ -1681,7 +1732,8 @@ CONTENT.learn.push(
   say: "In AT2, 96 BMI records were above 45 by the IQR rule. I kept them because they are real high-risk people. In AT3 I kept them again but capped BMI at 60.",
   remember: [
     "**96 by IQR, 39 by 3-SD, all kept.**",
-    "**AT2 keep → AT3 keep + cap.**"
+    "**AT2 keep → AT3 keep + cap.**",
+    "**First ask: error or real?** Error → delete. Real → keep or cap."
   ],
   point: { cells: [16], text: "In AT3: `BMI_clip = BMI.clip(upper=60)` in cell 16." },
   recall: [
@@ -1919,6 +1971,24 @@ CONTENT.glossary = [
   { id: "g-validation", term: "Validation data", plain: "The part used to choose settings. In CV, the fold left out.", lesson: "train-val-test" },
   { id: "g-valcurve", term: "Validation curve", plain: "A plot of training and validation scores as one setting changes.", lesson: "bias-variance" },
   { id: "g-variance", term: "Variance", plain: "How much a model changes with different training data. High variance means memorising noise.", lesson: "bias-variance" },
-  { id: "g-zscore", term: "Z-score normalisation", plain: "(value − mean) / SD, giving mean 0 and spread 1.", lesson: "scaling" }
+  { id: "g-zscore", term: "Z-score normalisation", plain: "(value − mean) / SD, giving mean 0 and spread 1.", lesson: "scaling" },
+  { id: "g-agnes", term: "AGNES / DIANA (hierarchical clustering)", plain: "Build a tree of clusters. AGNES merges bottom-up, DIANA splits top-down. No need to choose k first.", lesson: "at2-clusters" },
+  { id: "g-backprop", term: "Backpropagation", plain: "How an MLP learns: measure the error, send it backwards to find each weight's share of the blame, then adjust.", lesson: "mlp" },
+  { id: "g-crisp", term: "CRISP-DM", plain: "The six-step cycle of a data project: business understanding, data understanding, preparation, modelling, evaluation, deployment.", lesson: "crisp-dm" },
+  { id: "g-curse", term: "Curse of dimensionality", plain: "With many columns, everything is far from everything, so distances stop meaning much.", lesson: "knn" },
+  { id: "g-gd", term: "Gradient descent", plain: "Start with random weights, then take small steps downhill on the error until it is lowest. The learning rate is the step size.", lesson: "logreg" },
+  { id: "g-hardsoft", term: "Hard vs soft voting", plain: "Hard voting counts class votes. Soft voting averages predicted probabilities.", lesson: "voting" },
+  { id: "g-jaccard", term: "Jaccard coefficient", plain: "Similarity for 0/1 data that ignores 'both 0' matches. Suits rare (asymmetric) flags.", lesson: "knn" },
+  { id: "g-kernel-trick", term: "Kernel trick", plain: "Computing as if the data were lifted to a higher dimension where a straight cut works, without actually lifting it.", lesson: "svm" },
+  { id: "g-kmedoids", term: "k-medoids", plain: "Like k-means, but each centre must be a real record, so it is more robust to outliers.", lesson: "at2-clusters" },
+  { id: "g-median", term: "Median", plain: "The middle value when sorted. Not pulled by extreme values, unlike the mean.", lesson: "at2-types" },
+  { id: "g-occam", term: "Occam's razor", plain: "When two explanations work equally well, choose the simpler one.", lesson: "one-se" },
+  { id: "g-param", term: "Parameter", plain: "A number the model learns from data, like a weight. Hyper-parameters are set by you before training.", lesson: "tune-fn" },
+  { id: "g-perceptron", term: "Perceptron", plain: "The simplest neural network: one neuron with a straight-line boundary.", lesson: "mlp" },
+  { id: "g-skew", term: "Skewness", plain: "Lopsidedness. Right-skewed means a long tail to the right, and the mean sits above the median.", lesson: "scaling" },
+  { id: "g-smc", term: "Simple matching coefficient (SMC)", plain: "Similarity for 0/1 data that counts agreements on both 1s and 0s. Suits symmetric flags.", lesson: "knn" },
+  { id: "g-support", term: "Support vectors", plain: "The records closest to an SVM's boundary. Only they decide where it goes.", lesson: "svm" },
+  { id: "g-unsupervised", term: "Unsupervised learning", plain: "Learning without labels, such as finding groups. AT2's clustering was unsupervised.", lesson: "at2-clusters" },
+  { id: "g-wrapper", term: "Wrapper / embedded selection", plain: "Wrapper: try feature subsets with a real model. Embedded: selection happens inside training, like L1 setting weights to zero.", lesson: "mutual-info" }
 ];
 /* ===== END OF PART 2 of 2 ===== */
