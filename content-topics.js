@@ -584,3 +584,436 @@ CONTENT.numbers = [
   ['Top features', 'GenHlth 0.057 · BMI 0.038 · Age 0.026 · HighBP 0.018 · HighChol 0.011'],
   ['Cut-off', '0.27 → recall 93.9% · precision 65.4% · accuracy 72.1%']
 ];
+
+/* =====================================================================
+   THEORY for each topic (from the course knowledge base):
+     terms = key definitions [term, definition]
+     steps = how it works, step by step
+     pros / cons = strengths and weaknesses
+   The app shows these right after "What is it?", and lists every term
+   on the Definitions page (A to Z).
+   ===================================================================== */
+CONTENT.topics.unshift({ id: 'basics', group: 'start', title: 'Data analytics basics',
+  what: ['**Data** is recorded facts. **Data analytics** turns those facts into useful decisions.',
+         '**Machine learning (ML)** lets the computer learn the rules from examples instead of you writing them. **AI** is the big umbrella: any system that does something we would call smart.'],
+  example: 'A shop owner writes down daily sales (data), notices umbrellas sell more on rainy days (analytics), and a program learns to predict tomorrow\'s umbrella sales (machine learning).',
+  why: ['My project follows the standard recipe for a data project, **CRISP-DM**, with one rule the whole way: no decision is made by looking at the test data (AT3 report section 2).'],
+  got: ['Business understanding: a screening tool, measured by ROC AUC. Data understanding: found the pid leak. Preparation: drop pid, cap BMI, 9 new features, scaling.',
+        'Modelling: 9 classifiers tuned with 5-fold CV. Evaluation: test set, bootstrap CIs, confusion matrix, cut-off. Deployment: final model trained on all 63,622 rows.'],
+  show: { cells: [0], point: 'The table in the first cell: each notebook section and the report part it supports.' },
+  say: 'I followed the CRISP-DM steps, with one rule the whole way through: no decision was made by looking at the data that would later be used to test it.',
+  remember: 'CRISP-DM = Big Dogs Prefer Meat, Every Day. Analytics ladder = What, Why, Will, Should.',
+  check: [
+    { q: 'Name the 6 CRISP-DM steps.', a: 'Business understanding, data understanding, data preparation, modelling, evaluation, deployment.' },
+    { q: 'Machine learning vs AI?', a: 'ML is one part of AI: learning patterns from data. AI is any smart behaviour.' },
+    { q: 'Which kind of analytics is your AT3 model?', a: 'Predictive: it predicts who has diabetes.' }
+  ] });
+
+(function () {
+  var T = {
+  basics: {
+    terms: [
+      ['Data', 'Recorded facts, such as survey answers.'],
+      ['Data analytics', 'Turning data into useful decisions, with or without machine learning.'],
+      ['Machine learning (ML)', 'Letting the computer learn the rules from examples instead of writing them by hand.'],
+      ['Artificial intelligence (AI)', 'The big umbrella: any system that does something we would call smart. ML sits inside AI.'],
+      ['Descriptive analytics', 'What happened? Example: 51.4% of the AT2 sample had diabetes.'],
+      ['Diagnostic analytics', 'Why did it happen? Example: the diabetes rate rises with age and BMI.'],
+      ['Predictive analytics', 'What will happen? Example: the AT3 model predicts who has diabetes.'],
+      ['Prescriptive analytics', 'What should we do? Example: use a 0.27 cut-off to screen more people.'],
+      ['CRISP-DM', 'Cross-Industry Standard Process for Data Mining: the 6-step cycle of a data project.'],
+      ['Big data (the 5 Vs)', 'Volume (how much), Velocity (how fast), Variety (how many types), Veracity (how trustworthy), Value (is it useful).'],
+      ['Ethics', 'Privacy, fairness, transparency and accountability. A survey-based model must not be sold as a medical diagnosis.']
+    ],
+    steps: ['**Business understanding:** what problem, and how is success measured?', '**Data understanding:** explore, describe, check quality.', '**Data preparation:** clean, transform, build features.', '**Modelling:** train and tune models.', '**Evaluation:** check results against the goal.', '**Deployment:** put it to use. Going back to an earlier step is normal: it is a cycle.']
+  },
+  project: {
+    terms: [
+      ['Supervised learning', 'Learning with an answer key: every example has a label, and the model learns to map inputs to it.'],
+      ['Unsupervised learning', 'Learning without labels: the model finds structure by itself, such as groups (AT2 clustering).'],
+      ['Classification', 'Supervised learning where the label is a category (yes/no).'],
+      ['Regression', 'Supervised learning where the label is a number (like a house price).'],
+      ['Binary classification', 'Classification with exactly two classes, here 1 or 0.'],
+      ['Target (class label)', 'The column you want to predict.'],
+      ['Screening', 'Ranking many people by risk and testing the highest-risk first.']
+    ]
+  },
+  marking: {
+    terms: [
+      ['Oral defence', 'A short spoken exam where you explain and defend your own work.'],
+      ['Trade-off', 'Gaining one thing by giving up another.'],
+      ['Evidence', 'A number from your results plus where it is in the notebook.']
+    ]
+  },
+  data: {
+    terms: [
+      ['Instance (record, row)', 'One example in the table: here, one person.'],
+      ['Attribute (feature, column)', 'One measured property, such as BMI or HighBP.'],
+      ['Target', 'The column you want to predict: Diabetes_binary.'],
+      ['Missing value', 'An empty cell. Options: delete the row, fill with a constant, fill with the mean/median/mode, or a smart guess.'],
+      ['Duplicate', 'Two identical rows. Remove if it is a data-entry error; keep if they are real different people.'],
+      ['Class balance', 'How often each class appears. Balanced = equal counts.'],
+      ['Prevalence', 'How common a condition is in the real population.'],
+      ['Resampling', 'Picking rows to change the class mix, for example to make it 50/50.']
+    ]
+  },
+  pid: {
+    terms: [
+      ['Data leakage', 'Information that would not be available in real life sneaking into training, so scores look amazing but are fake.'],
+      ['Target leakage', 'A feature that secretly contains the answer.'],
+      ['Identifier (ID)', 'A column that only names a record. It should carry no information about the target.']
+    ],
+    steps: ['Check every column against the target, even ones that look like IDs.', 'Plot the target rate across bands of the column.', 'Test a one-split tree on that column alone.', 'A near-perfect score from one column means a leak: drop it.']
+  },
+  split: {
+    terms: [
+      ['Training set', 'The data the model learns from.'],
+      ['Validation set', 'The data used to choose settings (in CV, the fold left out).'],
+      ['Test set', 'Data kept aside and used once at the end, for an honest score.'],
+      ['Development set', 'Everything except the test set: used for training and validation.'],
+      ['Hold-out method', 'Splitting the data once into parts for training and testing.'],
+      ['Stratified split', 'A split that keeps the same class mix in every part.'],
+      ['Random seed', 'A fixed starting number for randomness, so results repeat exactly.']
+    ]
+  },
+  cv: {
+    terms: [
+      ['Cross-validation (CV)', 'Splitting data into k folds, training on k−1 and validating on the one left out, rotating and averaging.'],
+      ['Fold', 'One of the k equal parts.'],
+      ['Stratified k-fold', 'k-fold where every fold keeps the same class mix.'],
+      ['CV mean and SD', 'The average score across folds, and how much it varies.'],
+      ['Nested cross-validation', 'An inner CV loop chooses settings, an outer loop scores the whole process: an even more honest estimate.']
+    ],
+    steps: ['Cut the development data into 5 equal parts (folds).', 'Train on 4 folds, validate on the 5th.', 'Repeat 5 times so each fold is validated once.', 'Report the average of the 5 scores and their SD.'],
+    pros: ['Every row is used for validation once.', 'A mean and a spread instead of one lucky split.'],
+    cons: ['k times slower than one split.']
+  },
+  pipelines: {
+    terms: [
+      ['Pipeline', 'A chain of preprocessing steps and a model, fitted together on training data only.'],
+      ['Fit', 'Learn the numbers of a step (like a mean) or a model\'s weights from data.'],
+      ['Transform', 'Apply the learned step to data, such as subtracting the mean.'],
+      ['Preprocessing leakage', 'Fitting a step like a scaler on all the data before splitting, so the test data shapes the training.']
+    ]
+  },
+  cleaning: {
+    terms: [
+      ['Data cleaning', 'Fixing the four common problems: missing values, duplicates, noise and outliers.'],
+      ['Garbage in, garbage out', 'A great model on bad data gives bad answers.'],
+      ['Noise', 'Random error in values.'],
+      ['Outlier', 'A value far from the rest. It can be an error (age = 999) or a real but rare case (BMI 92).'],
+      ['1.5 × IQR rule', 'An outlier is below Q1 − 1.5×IQR or above Q3 + 1.5×IQR.'],
+      ['3-SD rule', 'An outlier is more than 3 standard deviations from the mean.'],
+      ['Capping (clipping)', 'Keeping the row but lowering values above a limit to that limit.'],
+      ['Binarisation', 'Turning a two-value category into one 0/1 column.']
+    ],
+    steps: ['Check missing values.', 'Check duplicates: error or real people?', 'Check outliers: error → delete; real → keep or cap.', 'Encode text columns as numbers.']
+  },
+  scaling: {
+    terms: [
+      ['Normalisation (scaling)', 'Putting columns on the same scale so no column dominates.'],
+      ['Min-max', '(v − min) / (max − min), giving 0 to 1. Weakness: one extreme value squashes everyone else.'],
+      ['Z-score', '(v − mean) / SD, giving mean 0 and SD 1. Works well with outliers; no fixed range.'],
+      ['Decimal scaling', 'v / 10^j, giving values between −1 and 1. Quick, but does not centre the data.'],
+      ['Mean', 'The sum divided by the count. Pulled by extreme values.'],
+      ['Standard deviation (SD)', 'The typical distance from the mean, in the original units.'],
+      ['Skewness', 'Lopsidedness. Right-skewed = a long tail to the right, and the mean sits above the median.']
+    ],
+    steps: ['Worked example, BMI 40 with AT2 numbers (min 14, max 92, mean 30.04, SD 7.34):', 'Min-max: (40 − 14) / 78 = 0.33.', 'Z-score: (40 − 30.04) / 7.34 = 1.36 (1.36 SDs above average).', 'Decimal scaling: 40 / 100 = 0.40.'],
+    pros: ['Z-score: good for most cases, especially with outliers.', 'Min-max: good when a method needs inputs between 0 and 1.'],
+    cons: ['Min-max: one extreme value squashes everyone.', 'Z-score: no fixed range.']
+  },
+  onehot: {
+    terms: [
+      ['Nominal', 'Names or labels with no order (Sex, HighBP).'],
+      ['Ordinal', 'Ordered categories with unequal gaps (GenHlth 1 to 5, Age codes).'],
+      ['One-hot encoding', 'A category with k values becomes k separate 0/1 columns, with exactly one "1" per row.'],
+      ['Dummy variable', 'One of the 0/1 columns created by one-hot encoding.'],
+      ['Fake order', 'The wrong idea a model gets from codes: that code 3 is "three times" code 1.']
+    ],
+    steps: ['List every level of the category.', 'Make one 0/1 column per level.', 'Put a 1 in the matching column, 0 in the rest.', 'Drop the original code column.']
+  },
+  features: {
+    terms: [
+      ['Feature engineering', 'Using what you know to build more useful inputs.'],
+      ['Interaction', 'Two features combined, because together they matter more (BP_Chol = HighBP × HighChol).'],
+      ['Aggregation (count)', 'Adding several flags into one score (CardioCount, Lifestyle).'],
+      ['Threshold flag', 'A 0/1 column that is 1 when a value passes a limit (FreqPhysDistress = 14+ bad days).'],
+      ['Banding', 'Grouping a number into ranges (BMI_cat = WHO bands).']
+    ]
+  },
+  featuresets: {
+    terms: [
+      ['Feature subset selection', 'Choosing which features to keep.'],
+      ['Filter method', 'Score each feature alone, before modelling (mutual information, correlation, chi-square).'],
+      ['Wrapper method', 'Try feature subsets with a real model and keep the best (forward or backward selection).'],
+      ['Embedded method', 'Selection happens inside training (L1 sets weights to 0; tree importance).'],
+      ['Mutual information', 'How much one feature alone tells you about the target. 0 = nothing.'],
+      ['Curse of dimensionality', 'With many columns, everything is far from everything, so distances stop meaning much.'],
+      ['PCA', 'Principal Component Analysis: squeezes many columns into a few summary columns that keep the most variation.'],
+      ['Conditional relevance', 'A feature that is weak alone but useful together with others.']
+    ],
+    pros: ['Filter: fast and simple.'],
+    cons: ['Filter: misses teamwork between features (it dropped HvyAlcoholConsump).']
+  },
+  baseline: {
+    terms: [
+      ['Baseline', 'The simplest possible model. Any real model should beat it.'],
+      ['Majority-class baseline', 'Always predicts the most common class (DummyClassifier).'],
+      ['AUC 0.5', 'No better than guessing: a coin flip.']
+    ]
+  },
+  tree: {
+    terms: [
+      ['Decision tree', 'A tree of yes/no questions that ends in a class.'],
+      ['Node / branch / leaf', 'A node tests an attribute, a branch is an answer, a leaf is a final class.'],
+      ['Root', 'The first question at the top of the tree.'],
+      ['Entropy', 'How mixed a group is: −Σ p log₂ p. Pure = 0; a 50/50 mix of 2 classes = 1.'],
+      ['Information gain', 'Entropy before a split minus the weighted entropy after it.'],
+      ['ID3', 'The classic algorithm: pick the attribute with the highest information gain, split, repeat.'],
+      ['Gini impurity', 'Another purity measure: 1 − Σ p². 0 when pure. The scikit-learn default.'],
+      ['Pruning', 'Growing the tree, then cutting back branches that don\'t help on validation data.'],
+      ['max_depth', 'How many questions in a row.'],
+      ['min_samples_leaf', 'The fewest records each leaf must hold.']
+    ],
+    steps: ['Start with all the data at the root.', 'Compute the information gain (or Gini drop) of every possible split.', 'Split on the best one.', 'Repeat on each branch until the groups are pure or a limit (depth, leaf size) is reached.', 'Worked example (PlayTennis, 9 Yes / 5 No): entropy = 0.940, Gini = 0.459. Outlook had the highest gain (0.246), so it goes at the root.'],
+    pros: ['Easy to explain.', 'No scaling needed.', 'Handles mixed data types.'],
+    cons: ['Overfits easily (memorises).', 'Unstable: small data changes give a different tree.', 'One tree is usually weaker than an ensemble.']
+  },
+  knn: {
+    terms: [
+      ['k-NN (k-nearest neighbours)', 'Classify a new record by a vote of its k most similar training records.'],
+      ['k', 'How many neighbours vote. Small k = noisy (high variance). Large k = smooth, but too large blurs (high bias).'],
+      ['Distance', 'How different two records are. Similarity is the opposite.'],
+      ['Euclidean distance', 'Straight line, "as the bird flies": √(Σ (a − b)²).'],
+      ['Manhattan distance', 'City blocks, "as the taxi drives": Σ |a − b|.'],
+      ['Distance-weighted vote', 'Closer neighbours get a bigger vote.'],
+      ['Lazy learner', 'Does no work while training (it just stores the data); all the work happens at prediction time.'],
+      ['Simple matching coefficient (SMC)', '(matches on 1s and 0s) / all: similarity for symmetric 0/1 data like Sex.'],
+      ['Jaccard coefficient', 'a / (a + b + c): ignores "both 0", for rare (asymmetric) flags like Stroke.'],
+      ['Curse of dimensionality', 'With many features, distances stop meaning much.']
+    ],
+    steps: ['Scale the data, so BMI doesn\'t drown out the 0/1 flags.', 'For a new person, compute the distance to every training person.', 'Take the k closest.', 'Vote: the majority class wins.', 'Worked example: A = (BMI 30, Age 5), B = (BMI 26, Age 8). Euclidean = √(16 + 9) = 5. Manhattan = 4 + 3 = 7.'],
+    pros: ['Simple, no training.', 'Works with any shape of boundary.'],
+    cons: ['Needs scaling.', 'Slow to predict on big data.', 'Hurt by many irrelevant features.', 'Needs a good distance measure.']
+  },
+  logreg: {
+    terms: [
+      ['Linear classifier', 'Separates classes with a straight line (or flat plane).'],
+      ['Linearly separable', 'One straight line can separate the two classes.'],
+      ['Weights and bias', 'The line: predict "yes" if w₁x₁ + w₂x₂ + … + b > 0.'],
+      ['Sigmoid', 'An S-shaped curve that turns any number into a probability between 0 and 1.'],
+      ['Logistic regression', 'A weighted sum of inputs passed through a sigmoid to give a probability.'],
+      ['Cross-entropy (log loss)', 'The error logistic regression minimises during training.'],
+      ['Least squares (SSE)', 'Choosing weights that make the sum of squared errors smallest.'],
+      ['Gradient descent', 'Start with random weights, then take small steps downhill on the error. The learning rate is the step size.'],
+      ['Regularisation', 'A penalty that keeps weights small so the model doesn\'t overfit.'],
+      ['C', 'Inverse regularisation strength: small C = strong penalty = simpler model.'],
+      ['L1 (lasso) / L2', 'L1 can push useless weights to exactly 0 (built-in feature selection). L2 shrinks all weights a little.'],
+      ['Odds ratio', 'How each weight can be read: how much a feature changes the odds of the outcome.']
+    ],
+    steps: ['Multiply each input by its weight and add the bias.', 'Pass the total through the sigmoid → a probability.', 'Compare with a cut-off (0.5 by default) → yes or no.', 'Training: adjust the weights by gradient descent to reduce cross-entropy.'],
+    pros: ['Fast, stable, easy to explain.'],
+    cons: ['Only straight boundaries.', 'Needs interactions made by hand.']
+  },
+  mlp: {
+    terms: [
+      ['Neuron', 'Multiplies inputs by weights, adds them up, and applies an activation.'],
+      ['Perceptron', 'The simplest neural network: one neuron, a straight boundary. It cannot learn XOR.'],
+      ['XOR', '"One or the other but not both": a pattern no single straight line can separate.'],
+      ['Multi-layer perceptron (MLP)', 'Neurons in layers: input → hidden layer(s) → output. It can learn curved boundaries.'],
+      ['Hidden layer', 'A layer between input and output that combines inputs in new ways.'],
+      ['Activation function', 'The bend a neuron adds: ReLU, tanh or sigmoid.'],
+      ['Backpropagation', 'Send the error backwards to find how much each weight was to blame, then adjust it.'],
+      ['alpha', 'The MLP\'s L2 penalty (bigger = stronger).'],
+      ['Early stopping', 'Hold back 10% of the training data and stop when that part stops improving.']
+    ],
+    steps: ['Forward pass: inputs go through the layers to a prediction.', 'Measure the error.', 'Backpropagation: send the error backwards to each weight.', 'Adjust the weights by gradient descent.', 'Repeat until early stopping says stop.'],
+    pros: ['Learns curved boundaries and its own feature combinations.'],
+    cons: ['A black box.', 'Sensitive to scaling and starting weights.']
+  },
+  svm: {
+    terms: [
+      ['Support vector machine (SVM)', 'Finds the boundary with the widest margin between the classes.'],
+      ['Margin', 'The width of the "street" between the classes. Wider = safer for new points.'],
+      ['Support vectors', 'The points on the edge of the street. Only they decide where the line goes.'],
+      ['Soft margin', 'Allowing some points on the wrong side, because real data overlaps.'],
+      ['C (in SVM)', 'The penalty for mistakes. Large C = strict, narrow street, risk of overfitting. Small C = relaxed, wider street, simpler.'],
+      ['Kernel trick', 'Computing as if the data were lifted to a higher dimension where a flat cut works, without actually lifting it.'],
+      ['Kernels', 'Linear (no lift), polynomial, RBF (radial basis function, the most popular).'],
+      ['gamma (RBF)', 'How far one point\'s influence reaches. Large gamma = very local, wiggly boundary (overfitting).']
+    ],
+    steps: ['Look for the line with the widest margin.', 'Allow some mistakes (soft margin), controlled by C.', 'If no straight line works, use a kernel to curve the boundary.'],
+    pros: ['Generalises well: the wide margin keeps it simple (low variance).'],
+    cons: ['Training time grows roughly with rows².', 'Hard to explain.', 'Large C or gamma can overfit.']
+  },
+  bagging: {
+    terms: [
+      ['Ensemble', 'Many models combined. Works only if the models make different mistakes.'],
+      ['Wisdom of crowds', 'The average of many guesses is often close to the truth.'],
+      ['Bootstrap sample', 'Rows drawn at random with replacement: some repeat, some are left out.'],
+      ['Bagging (bootstrap aggregating)', 'Many deep trees, each on its own bootstrap sample, combined by vote or average.'],
+      ['Random forest', 'Bagging plus a random subset of features at each split, so the trees differ more.'],
+      ['max_features', 'How many features each split may look at (sqrt = square root of the number of features).'],
+      ['Variance', 'How much a model changes with different training data. Averaging lowers it.']
+    ],
+    steps: ['Make many bootstrap samples of the rows.', 'Train one deep tree on each sample (forest: random features at each split).', 'Combine: vote for classes, or average probabilities.'],
+    pros: ['Lowers variance: each deep tree is jumpy, the average is stable.', 'Beats a single tree.'],
+    cons: ['Does not fix bias.', 'Large models.']
+  },
+  boosting: {
+    terms: [
+      ['Boosting', 'Small trees trained in sequence, each fixing the errors of the team so far.'],
+      ['Gradient boosting', 'Boosting where each new tree is trained on the remaining errors.'],
+      ['Histogram-based gradient boosting', 'A fast version that groups values into bins first (HistGradientBoostingClassifier).'],
+      ['Learning rate', 'How much of each new tree is added. Smaller = more careful.'],
+      ['Early stopping', 'Stop adding trees when the validation score stops improving.'],
+      ['Bias', 'Error from a model being too simple. Boosting attacks it directly.']
+    ],
+    steps: ['Train a small, simple tree.', 'Look at what it got wrong.', 'Train the next small tree to fix those errors.', 'Add it to the team, but only a little of it (the learning rate).', 'Repeat until the validation score stops improving (early stopping).'],
+    pros: ['Lowers bias.', 'Often the most accurate on tables of data.'],
+    cons: ['Many settings to tune.', 'Can overfit without a low learning rate and early stopping.'],
+    compare: [['', 'Bagging / random forest', 'Boosting'], ['How trees are built', 'In parallel, independently', 'In sequence, each fixing the last'], ['Tree type', 'Deep trees', 'Small (shallow) trees'], ['Mainly reduces', 'Variance', 'Bias'], ['Picture', 'A crowd guessing at once', 'A student correcting mistakes one by one']]
+  },
+  voting: {
+    terms: [
+      ['Voting ensemble', 'Combines different kinds of models.'],
+      ['Hard voting', 'Each model votes for a class; the majority wins.'],
+      ['Soft voting', 'Average the predicted probabilities (usually better).'],
+      ['Diversity', 'Models making different mistakes: the only way an ensemble gains.']
+    ],
+    pros: ['Can help when the models disagree in useful ways.'],
+    cons: ['No gain when the models make the same mistakes.', 'More models to look after.']
+  },
+  search: {
+    terms: [
+      ['Parameter', 'Learned by the model from data: the weights, the split points.'],
+      ['Hyper-parameter', 'Set by you before training: max_depth, k, C, learning rate.'],
+      ['Grid search', 'Try every combination in a list. Good when there are few settings.'],
+      ['Random search', 'Try a fixed number of random combinations. Better with many or continuous settings: usually only 1 or 2 settings really matter.'],
+      ['Validation curve', 'Training and validation score plotted against one hyper-parameter.'],
+      ['Golden rule', 'Score every setting with CV on the development data, never on the test set.']
+    ]
+  },
+  overfitting: {
+    terms: [
+      ['Bias (underfitting)', 'Too simple: misses the real pattern. Darts all together but far from the bullseye.'],
+      ['Variance (overfitting)', 'Too complex: memorises noise. Darts scattered everywhere.'],
+      ['Bias-variance trade-off', 'Error = Bias² + Variance + Noise. The best model balances the first two.'],
+      ['Noise', 'The part of the error no model can remove.'],
+      ['Overfitting gap', 'Training score minus validation score. A big gap = overfitting.']
+    ],
+    steps: ['Compare training and validation scores.', 'Big gap → too complex: limit depth, raise leaf size, regularise, or stop early.', 'Both low → too simple: allow more complexity.']
+  },
+  auc: {
+    terms: [
+      ['Probability score', 'The model\'s number for each person (for example 0.82 or 0.31).'],
+      ['Cut-off (threshold)', 'Above it = "yes". Each cut-off gives one (FPR, TPR) pair.'],
+      ['True positive rate (TPR)', 'Recall: of the real cases, the share caught.'],
+      ['False positive rate (FPR)', 'Of the healthy people, the share wrongly flagged: 1 − specificity.'],
+      ['ROC curve', 'TPR plotted against FPR as the cut-off slides from 1 down to 0.'],
+      ['AUC', 'Area under the ROC curve: the chance a random sick person scores higher than a random healthy one. 0.5 = coin flip, 0.7 okay, 0.8 good, 0.9+ excellent.']
+    ],
+    steps: ['The model gives each person a probability.', 'Pick a cut-off: above it = "yes". That gives one (FPR, TPR) point.', 'Slide the cut-off from 1 down to 0, plotting each point: the ROC curve.', 'AUC = the area under that curve.']
+  },
+  confusion: {
+    terms: [
+      ['Confusion matrix', 'A 2×2 table comparing what the model said with what was true.'],
+      ['True positive (TP)', 'Really yes, predicted yes.'],
+      ['True negative (TN)', 'Really no, predicted no.'],
+      ['False positive (FP)', 'Really no, predicted yes: a false alarm.'],
+      ['False negative (FN)', 'Really yes, predicted no: a miss. The dangerous one in medicine.'],
+      ['Accuracy', '(TP + TN) / all: how often it is right overall.'],
+      ['Recall (sensitivity, TPR)', 'TP / (TP + FN): of all real cases, how many we caught.'],
+      ['Precision', 'TP / (TP + FP): of the people we flagged, how many were right.'],
+      ['Specificity (TNR)', 'TN / (TN + FP): of the healthy people, how many we cleared.'],
+      ['F1', '2 × P × R / (P + R): a balance of precision and recall.'],
+      ['When accuracy lies', 'With 1% disease, always saying "no" is 99% accurate but useless. Balanced data makes accuracy fair.']
+    ]
+  },
+  bootstrap: {
+    terms: [
+      ['Bootstrap', 'Re-using your own sample, drawn with replacement, to measure uncertainty.'],
+      ['95% confidence interval', 'The middle 95% of the resampled scores: where the score would likely land if the test sample were drawn again.'],
+      ['Percentile', 'The value below which a given share of results fall (2.5th, 97.5th).'],
+      ['Paired bootstrap', 'Score both models on the same resample and record the difference.'],
+      ['Really different (significant)', 'The 95% interval of the difference does not include 0.']
+    ],
+    steps: ['Draw 12,725 rows from the 12,725 test rows, with replacement.', 'Compute AUC on that resample.', 'Repeat 1,000 times → 1,000 AUCs.', 'The 2.5th to 97.5th percentile is the 95% CI.', 'Paired: do the same with the difference between two models.']
+  },
+  winner: {
+    terms: [
+      ['Standard error (SE)', 'How much an average could move by chance: SD / √(number of folds).'],
+      ['One-standard-error rule', 'Models within one SE of the best score are tied; pick the simplest.'],
+      ['Occam\'s razor', 'When two explanations work equally well, choose the simpler one.']
+    ],
+    steps: ['Find the model with the best mean CV score.', 'Compute its standard error.', 'Every model within one SE counts as tied.', 'Pick the simplest tied model.']
+  },
+  importance: {
+    terms: [
+      ['Feature importance', 'How much the model relies on each feature.'],
+      ['Permutation importance', 'Shuffle one column and measure the drop in score. Works for any model.'],
+      ['Correlation is not causation', 'Two things moving together doesn\'t mean one causes the other (ice cream and drownings: the hidden cause is hot weather).']
+    ],
+    steps: ['Score the model on the test set.', 'Shuffle one column, breaking its link to the target.', 'Score again and record the drop.', 'Repeat for every column (5 shuffles each here).']
+  },
+  cutoff: {
+    terms: [
+      ['Cut-off (threshold)', 'The probability above which a person is predicted "yes".'],
+      ['Precision-recall trade-off', 'Lower cut-off: recall up, precision down. Higher: the opposite.'],
+      ['Out-of-fold predictions', 'Predictions for each row from a model that never saw that row.']
+    ]
+  },
+  limits: {
+    terms: [
+      ['Deployment', 'Putting the final model to use, retrained on all labelled data.'],
+      ['Calibration', 'Adjusting probabilities so they match real-world rates.'],
+      ['Cross-sectional data', 'Measured at one point in time, so it cannot show cause and effect.'],
+      ['Nested cross-validation', 'An inner CV chooses settings and an outer CV scores the whole process.']
+    ]
+  },
+  'at2-explore': {
+    terms: [
+      ['Nominal', 'Names or labels, no order. Allowed: = and ≠ (count, mode).'],
+      ['Ordinal', 'Ordered, but gaps not equal. Adds < and > (median).'],
+      ['Interval', 'Equal gaps, no true zero (°C). Adds + and − (mean).'],
+      ['Ratio', 'Equal gaps and a true zero (weight, BMI). Adds × and ÷.'],
+      ['Symmetric / asymmetric binary', 'Symmetric: both values matter equally (Sex). Asymmetric: one value is rare and more important (Stroke).'],
+      ['Qualitative vs quantitative', 'Nominal and ordinal are categories; interval and ratio are numbers.'],
+      ['Mean / median / mode', 'Average / middle value when sorted (not pulled by extremes) / most common value (the only one for nominal data).'],
+      ['Range / variance / SD', 'max − min / average squared distance from the mean / square root of the variance.'],
+      ['Quartiles and IQR', 'Q1 = 25% below, Q3 = 75% below. IQR = Q3 − Q1, the middle 50%.'],
+      ['Coefficient of variation (CV)', 'SD / mean: compares spread between columns with different units.'],
+      ['Skewness / kurtosis', 'Lopsidedness / how heavy the tails are.'],
+      ['Pearson correlation', 'Linear relationship between two numeric columns (−1 to +1).'],
+      ['Spearman correlation', 'Uses ranks: works for ordinal data and curved relationships.'],
+      ['Chi-square test', 'Are two categorical columns related? Gives a p-value.'],
+      ['Cramér\'s V', 'How strong that relationship is (0 to 1).'],
+      ['Clustering', 'Grouping similar records without labels: high similarity inside a group, low between groups.'],
+      ['k-means', 'Choose k, place k centres, assign each record to the nearest centre, move each centre to its group\'s mean, repeat.'],
+      ['Elbow method', 'Plot within-cluster distance against k and pick the bend.'],
+      ['k-medoids', 'Like k-means, but each centre must be a real record: more robust to outliers.'],
+      ['Hierarchical clustering', 'Builds a tree of clusters (a dendrogram). AGNES merges bottom-up; DIANA splits top-down.'],
+      ['Hard vs soft clustering', 'Hard: each record in exactly one cluster. Soft (fuzzy): partly in several.'],
+      ['PCA', 'Squeezes many columns into a few that keep the most variation (used to plot the clusters).']
+    ],
+    steps: ['k-means step by step: choose k (for example 3).', 'Put k centre points at random.', 'Assign: each record joins its nearest centre.', 'Update: move each centre to the mean of its members.', 'Repeat assign and update until nothing changes.'],
+    pros: ['k-means: simple and fast.'],
+    cons: ['k-means: you must choose k, the result depends on the random start, it is sensitive to outliers, and it needs scaling.']
+  },
+  'at2-prep': {
+    terms: [
+      ['Binning', 'Grouping values into bins to reduce noise, keeping them as numbers.'],
+      ['Equi-width (equal-width) binning', 'Equal-size intervals: width = (max − min) / bins. Easy, but uneven when data is skewed.'],
+      ['Equi-depth (equal-frequency) binning', 'Each bin gets about the same number of values. Identical values must stay in the same bin.'],
+      ['Smoothing by bin means', 'Replace each value with its bin\'s mean. Lowers variance.'],
+      ['Smoothing by bin boundaries', 'Replace each value with the closest edge of its bin. Raises variance.'],
+      ['Discretisation', 'Turning a number into named groups (labels), like Age codes → life stages.'],
+      ['Binarisation', 'A two-value category becomes one 0/1 column.'],
+      ['Normalisation', 'Min-max (0 to 1), z-score (mean 0, SD 1), decimal scaling (divide by a power of 10).']
+    ],
+    steps: ['Worked example, values 4, 8, 15, 21, 21, 24, 25, 28, 34 in 3 bins:', 'Equi-width: width (34 − 4) / 3 = 10 → [4, 14), [14, 24), [24, 34].', 'Equi-depth: 3 values each → {4, 8, 15}, {21, 21, 24}, {25, 28, 34}.', 'Smoothing by means: {4, 8, 15} → {9, 9, 9}.', 'Smoothing by boundaries: {4, 8, 15} → {4, 4, 15}.']
+  }
+  };
+  CONTENT.topics.forEach(function (t) { var x = T[t.id]; if (x) for (var k in x) t[k] = x[k]; });
+})();

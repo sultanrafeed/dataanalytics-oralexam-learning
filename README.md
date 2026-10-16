@@ -6,9 +6,10 @@ Live at: https://sultanrafeed.github.io/dataanalytics-oralexam-learning/ (open i
 
 ## How it works
 
-**Topics** (32, in the order of the project). Every topic answers the same questions:
+**Topics** (33, in the order of the project). Every topic answers the same questions:
 
 1. **What is it?** Plain words and an everyday example (from the course knowledge base)
+   - **Key definitions** of every term, **How it works** step by step, and **Strengths and weaknesses**
 2. **Why did I use it?**
 3. **What did I get?** My results, with numbers
 4. **Show it in the notebook.** Cell numbers, the real code, a line-by-line explanation, and what to point at
@@ -18,7 +19,9 @@ Live at: https://sultanrafeed.github.io/dataanalytics-oralexam-learning/ (open i
 
 **Exam Qs**: the 37 likely questions (5 official, 27 follow-ups, 5 AT2). Answer out loud with a 40-second timer, then see the Good answer, the Excellent add-on and where to point.
 
-**Test yourself**: 10 quick questions at a time from all topics. Misses come back first.
+**Definitions**: all 226 key terms A to Z, with search.
+
+**Test yourself**: 10 quick questions at a time from all topics, including "Define …" questions. Misses come back first.
 
 **Home**: next topic, progress, the 90-second opening (with a hide-the-script mode and timer) and the key numbers on one page.
 
@@ -27,7 +30,7 @@ Live at: https://sultanrafeed.github.io/dataanalytics-oralexam-learning/ (open i
 | File | What it holds |
 |---|---|
 | `index.html` | The whole app (logic and styles). No study content. |
-| `content-topics.js` | The 32 topics and the key numbers. |
+| `content-topics.js` | The 33 topics, their definitions (`terms`), steps, strengths and weaknesses, and the key numbers. |
 | `content-practice.js` | The 90-second opening and the 37 exam questions. |
 | `content-code.js` | Notebook code for each topic, copied exactly from the notebook. |
 | `sw.js` | Offline support. |
