@@ -1,68 +1,42 @@
 # AT3 Defence Study
 
-A calm, personal study app for the **AT3 oral defence** in 32130 Fundamentals of Data Analytics. It teaches the project from zero, then trains you to answer every likely question at Excellent level: **What → Evidence → Why / trade-off**.
+A simple study app for the **AT3 oral defence** (32130 Fundamentals of Data Analytics). It teaches the diabetes project topic by topic, then lets you practise the exam questions out loud.
 
-It is a web app, not an App Store app. Host it on GitHub Pages, open it in Safari on an iPhone and choose **Share → Add to Home Screen**. It also works on a laptop, and it works offline after the first visit.
+Live at: https://sultanrafeed.github.io/dataanalytics-oralexam-learning/ (open in Safari on iPhone, then **Share → Add to Home Screen**). Works offline after the first visit.
 
-## What is inside
+## How it works
 
-| Mode | What it does |
-|---|---|
-| **Learn** | 69 lessons in 9 parts. Each one has: In plain words → In my project → Say it → Remember it → Point at → Cover and recall. Mark each lesson "Got it" or "Review again". Includes a searchable glossary of 128 terms. |
-| **Story** | The 90-second opening script in 3 stages: Read, Fill the gaps, From memory (90-second countdown, then self-rate). |
-| **Flashcards** | 251 cards across 6 topics, plus a "Priority numbers" filter. 5 spaced-repetition boxes. Box 5 = mastered. |
-| **Quiz** | 100 four-option questions (72 AT3, 28 AT2) in rounds of 10, each answer explained. "Retry only my misses". |
-| **Answer practice** | 37 questions (5 official, 27 follow-ups, 5 AT2). 40-second timer, 3-tap reveal, 3-layer self-check, Listen button. |
-| **Code walkthrough** | 28 steps through the notebook, with the real code, "Line by line" notes, what to say, and what to point at. |
-| **Progress** | Plain counts, the 10 weakest items, and **Mock defence** (8 questions, then review and a self-rated estimate). |
+**Topics** (32, in the order of the project). Every topic answers the same questions:
 
-There are no points, streaks, badges or sounds.
+1. **What is it?** Plain words and an everyday example (from the course knowledge base)
+2. **Why did I use it?**
+3. **What did I get?** My results, with numbers
+4. **Show it in the notebook.** Cell numbers, the real code, a line-by-line explanation, and what to point at
+5. **Say it in the exam.** A ready answer (What → Evidence → Why), with a Listen button
+6. **Remember.** One line
+7. **Check yourself.** 3 quick questions, then "I understand" or "Review later"
+
+**Exam Qs**: the 37 likely questions (5 official, 27 follow-ups, 5 AT2). Answer out loud with a 40-second timer, then see the Good answer, the Excellent add-on and where to point.
+
+**Test yourself**: 10 quick questions at a time from all topics. Misses come back first.
+
+**Home**: next topic, progress, the 90-second opening (with a hide-the-script mode and timer) and the key numbers on one page.
 
 ## Files
 
-All files sit in one flat folder.
-
 | File | What it holds |
 |---|---|
-| `index.html` | All app logic, styles, and the `CONFIG` settings at the top of the script. No study content. |
-| `content-learn.js` | Home rubric and 5-day plan, lesson parts, all lessons, and the glossary. |
-| `content-cards.js` | All flashcards. |
-| `content-quiz.js` | All quiz questions. |
-| `content-practice.js` | The 90-second story and the 37 Answer-practice questions. |
-| `content-code.js` | The code walkthrough steps. |
-| `sw.js` | Offline support (cache-first). |
-| `manifest.webmanifest`, `icon.svg`, `apple-touch-icon.png` | Lets the app install to the home screen with an icon. |
-| `.nojekyll` | Tells GitHub Pages to serve the files as they are. |
+| `index.html` | The whole app (logic and styles). No study content. |
+| `content-topics.js` | The 32 topics and the key numbers. |
+| `content-practice.js` | The 90-second opening and the 37 exam questions. |
+| `content-code.js` | Notebook code for each topic, copied exactly from the notebook. |
+| `sw.js` | Offline support. |
+| `manifest.webmanifest`, `icon.svg`, `apple-touch-icon.png`, `.nojekyll` | Home-screen install and GitHub Pages. |
 
-## How to edit the content
+## Editing
 
-Open the file in any text editor, change the text between the quotes, and save. Rules that keep progress safe:
+Change the text between the quotes and save. Keep every `id` the same (progress is saved by id). `**bold**` makes bold text. After any edit, change `VERSION` in `sw.js` (for example `at3-study-v2` → `at3-study-v3`) so installed copies update.
 
-- **Never change an `id`.** Progress is saved by id. A new id counts as a new item.
-- Inside text, `**bold**` makes bold and `` `code` `` makes code style.
-- **content-learn.js**: each lesson has `plain`, `project`, `say`, `remember`, `point` (cells and text), optional `trap`, and exactly 3 `recall` prompts. A list item can be a sentence, `{ list: [...] }` or `{ table: { head: [...], rows: [[...]] } }`.
-- **content-cards.js**: one card per line, using `Q(...)` (question/answer), `B(...)` (fill the blank: put the hidden part in `{{double braces}}`), `X(...)` (contrast pair) or `S(...)` (say-it). Add `true` at the end to mark a Priority number.
-- **content-quiz.js**: one `Q(...)` per question. **The first option is always the right answer, and the second is the closest wrong answer.** The app shuffles them.
-- **content-practice.js**: `good` is the direct answer, `excellent` is the add-on, and `short` is an optional short version, shown when the full answer is over 80 words.
-- **content-code.js**: keep each `c` line identical to the notebook. `n` is the "Line by line" note.
-- **Settings** (timers, new cards per session, marks per rating) are in `CONFIG` at the top of the script in `index.html`.
+## Progress
 
-**After any edit, open `sw.js` and change `VERSION`** (for example `at3-study-v1` → `at3-study-v2`). Otherwise installed copies keep showing the old files.
-
-## Run it locally
-
-Opening `index.html` directly works, but offline mode needs a web server:
-
-```sh
-npx http-server .
-```
-
-Then visit the address it prints.
-
-## Publish on GitHub Pages
-
-In the repository, go to **Settings → Pages**. Under **Build and deployment**, set **Source: Deploy from a branch**, **Branch: main**, **Folder: / (root)**, and save. After a minute the site is at `https://<your-username>.github.io/<repository-name>/`.
-
-## Progress is saved per device and per browser
-
-Progress lives in the browser's storage (`localStorage`). It is not synced. Your iPhone and your laptop keep separate progress. On an iPhone, **the Home Screen app and Safari also keep separate progress**, so pick one and stick with it. "Reset all progress" on the Home screen clears it, after a confirm step.
+Progress is saved in the browser, per device. The Home Screen app and Safari keep separate progress, so use one of them.

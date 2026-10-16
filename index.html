@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>AT3 Defence Study</title>
-<meta name="description" content="Personal study app for the AT3 oral defence in 32130 Fundamentals of Data Analytics.">
+<meta name="description" content="Learn your AT3 diabetes project topic by topic, then practise the exam questions.">
 <meta name="theme-color" content="#f7f6f2">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -15,1091 +15,295 @@
 <link rel="manifest" href="manifest.webmanifest">
 <style>
 :root {
-  --bg: #f7f6f2;
-  --surface: #ffffff;
-  --surface-2: #efede7;
-  --text: #1d1d1f;
-  --muted: #5c5c63;
-  --line: #dcd9d0;
-  --accent: #1f4e79;          /* ink blue, 8.6:1 on white */
-  --accent-soft: #e5ecf3;
-  --right: #3d7556;
-  --right-soft: #e6f0ea;
-  --wrong: #a3443b;
-  --wrong-soft: #f6e6e3;
-  --radius: 10px;
-  --nav-h: 60px;
-  --side-w: 220px;
-  color-scheme: light;
+  --bg: #f7f6f2; --surface: #fff; --soft: #efede7; --text: #1d1d1f; --muted: #5c5c63;
+  --line: #dcd9d0; --accent: #1f4e79; --accent-soft: #e5ecf3;
+  --right: #3d7556; --right-soft: #e6f0ea; --wrong: #a3443b; --wrong-soft: #f6e6e3;
+  --r: 12px; --nav: 60px; color-scheme: light;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-html { -webkit-text-size-adjust: 100%; }
-body {
-  margin: 0; background: var(--bg); color: var(--text);
-  font: 18px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  touch-action: manipulation;
-}
-button, input, select { font: inherit; color: inherit; }
-button { touch-action: manipulation; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 18px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; touch-action: manipulation; -webkit-text-size-adjust: 100%; }
+button { font: inherit; color: inherit; touch-action: manipulation; }
 a { color: var(--accent); }
-:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
-main:focus, main:focus-visible { outline: none; }
-code, pre, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace; }
-.skip { position: absolute; left: -9999px; }
-.skip:focus { left: 8px; top: 8px; background: var(--surface); padding: 8px 12px; z-index: 99; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+main:focus { outline: none; }
+code, pre { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
 
-/* ---------- layout ---------- */
-header.top {
-  position: sticky; top: 0; z-index: 10; background: var(--bg);
-  border-bottom: 1px solid var(--line);
-  padding: calc(env(safe-area-inset-top) + 8px) 16px 8px;
-  display: flex; align-items: center; gap: 8px; min-height: 56px;
-}
-header.top h1 { font-size: 17px; margin: 0; flex: 1; font-weight: 600; line-height: 1.3; }
-.backlink { min-width: 48px; min-height: 48px; display: inline-flex; align-items: center; background: none; border: 0; color: var(--accent); font-size: 17px; cursor: pointer; padding: 0 4px; }
-main { max-width: 40em; margin: 0 auto; padding: 16px 16px calc(var(--nav-h) + env(safe-area-inset-bottom) + 32px); }
-nav.main {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--surface);
-  border-top: 1px solid var(--line); display: flex;
-  padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-}
-nav.main a { flex: 1; min-height: var(--nav-h); display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 500; text-align: center; padding: 0 2px; }
-nav.main a[aria-current="page"] { color: var(--accent); font-weight: 700; box-shadow: inset 0 3px 0 var(--accent); }
-nav.main a.side-only { display: none; }
+header { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); padding: calc(env(safe-area-inset-top) + 6px) 12px 6px; display: flex; align-items: center; gap: 6px; min-height: 54px; }
+header h1 { font-size: 17px; margin: 0; flex: 1; }
+.back { min-width: 48px; min-height: 44px; border: 0; background: none; color: var(--accent); font-size: 17px; cursor: pointer; text-align: left; }
+main { max-width: 40em; margin: 0 auto; padding: 16px 16px calc(var(--nav) + env(safe-area-inset-bottom) + 30px); }
+nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 9; display: flex; background: var(--surface); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); }
+nav a { flex: 1; min-height: var(--nav); display: flex; align-items: center; justify-content: center; text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 600; text-align: center; }
+nav a[aria-current] { color: var(--accent); box-shadow: inset 0 3px 0 var(--accent); }
 @media (min-width: 900px) {
-  nav.main { top: 0; right: auto; width: var(--side-w); flex-direction: column; border-top: 0; border-right: 1px solid var(--line); padding: 20px 0; }
-  nav.main a, nav.main a.side-only { display: flex; flex: none; justify-content: flex-start; padding: 0 24px; font-size: 16px; min-height: 48px; }
-  nav.main a[aria-current="page"] { box-shadow: inset 4px 0 0 var(--accent); background: var(--accent-soft); }
-  nav.main .brand { display: block; padding: 0 24px 16px; font-weight: 700; color: var(--text); }
-  header.top, main { margin-left: var(--side-w); }
-  main { margin-left: max(var(--side-w), calc(var(--side-w) + (100vw - var(--side-w) - 40em) / 2 - 16px)); padding-bottom: 48px; }
+  nav { top: 0; right: auto; width: 210px; flex-direction: column; border-top: 0; border-right: 1px solid var(--line); padding-top: 16px; }
+  nav a { flex: none; justify-content: flex-start; padding: 0 22px; min-height: 50px; font-size: 16px; }
+  nav a[aria-current] { box-shadow: inset 4px 0 0 var(--accent); background: var(--accent-soft); }
+  header { margin-left: 210px; } main { padding-bottom: 40px; }
+  body > main { margin-left: max(226px, calc(210px + (100vw - 210px - 40em) / 2)); }
 }
-nav.main .brand { display: none; }
 
-/* ---------- type and blocks ---------- */
 h2 { font-size: 26px; line-height: 1.25; margin: 4px 0 8px; }
-h3 { font-size: 20px; line-height: 1.3; margin: 24px 0 8px; }
-p { margin: 0 0 12px; }
-ul, ol { margin: 0 0 12px; padding-left: 22px; }
-li { margin-bottom: 4px; }
-.muted { color: var(--muted); }
-.small { font-size: 15px; }
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; margin: 0 0 12px; }
-.block { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--line); border-radius: var(--radius); padding: 12px 16px 4px; margin: 0 0 12px; }
-.block .label { display: block; font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
-.block.k-plain { border-left-color: #8a8a91; }
-.block.k-project { border-left-color: var(--accent); }
-.block.k-say { border-left-color: var(--accent); background: var(--accent-soft); }
-.block.k-remember { border-left-color: #8a6d2f; }
-.block.k-point { border-left-color: #5c5c63; }
-.block.k-trap { border-left-color: var(--wrong); }
-.block.k-recall { border-left-color: var(--right); }
-.kicker { font-size: 14px; font-weight: 700; color: var(--accent); letter-spacing: .04em; text-transform: uppercase; }
-table.t { width: 100%; border-collapse: collapse; font-size: 15px; margin: 4px 0 12px; }
-table.t th, table.t td { border-bottom: 1px solid var(--line); padding: 6px 6px; text-align: left; vertical-align: top; }
-table.t th { font-size: 13px; color: var(--muted); }
-.tablewrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-code.inline { background: var(--surface-2); padding: 1px 5px; border-radius: 4px; font-size: 15px; }
-
-/* ---------- controls ---------- */
-.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 10px 18px; border-radius: var(--radius); border: 1px solid var(--accent); background: var(--accent); color: #fff; font-weight: 600; cursor: pointer; text-decoration: none; text-align: center; line-height: 1.3; }
-.btn.secondary { background: var(--surface); color: var(--accent); }
-.btn.plain { background: var(--surface); color: var(--text); border-color: var(--line); }
-.btn.right { background: var(--right); border-color: var(--right); }
-.btn.wrong { background: var(--wrong); border-color: var(--wrong); }
-.btn.block-w { width: 100%; }
-.btn[disabled] { opacity: .45; cursor: default; }
-.row { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
-.row > .btn { flex: 1 1 140px; }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 12px; }
-.chip { min-height: 48px; padding: 8px 14px; border-radius: 24px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; font-size: 16px; }
-.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
-.listbtn { display: flex; width: 100%; text-align: left; align-items: center; gap: 12px; min-height: 56px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 8px; cursor: pointer; text-decoration: none; color: var(--text); }
-.listbtn .grow { flex: 1; }
-.listbtn .meta { font-size: 14px; color: var(--muted); white-space: nowrap; }
-.tag { display: inline-block; font-size: 13px; font-weight: 600; padding: 1px 8px; border-radius: 12px; background: var(--surface-2); color: var(--muted); }
-.tag.got, .tag.excellent { background: var(--right-soft); color: var(--right); }
-.tag.review, .tag.missed { background: var(--wrong-soft); color: var(--wrong); }
-.tag.good { background: var(--accent-soft); color: var(--accent); }
-.tag.priority { background: #f3ead6; color: #6b5220; }
-input[type="search"] { width: 100%; min-height: 48px; padding: 10px 14px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface); font-size: 18px; }
-.check { display: flex; gap: 12px; align-items: center; width: 100%; min-height: 52px; padding: 8px 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); margin-bottom: 8px; cursor: pointer; text-align: left; }
-.check .box { width: 24px; height: 24px; border: 2px solid var(--muted); border-radius: 5px; flex: none; position: relative; }
-.check[aria-pressed="true"] .box { background: var(--right); border-color: var(--right); }
-.check[aria-pressed="true"] .box::after { content: ""; position: absolute; left: 6px; top: 1px; width: 6px; height: 12px; border: solid #fff; border-width: 0 3px 3px 0; transform: rotate(45deg); }
-.status { padding: 10px 14px; border-radius: var(--radius); margin: 8px 0 12px; background: var(--surface-2); }
-.status.right { background: var(--right-soft); color: #234a35; }
-.status.wrong { background: var(--wrong-soft); color: #6d2a23; }
-
-/* progress bars (motion allowed) */
-.bar { height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; margin: 6px 0 10px; }
-.bar > i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .4s ease; }
-.bar.warn > i { background: var(--wrong); }
-
-/* timer */
-.timer { font: 600 48px/1 ui-monospace, "SF Mono", Menlo, Consolas, monospace; text-align: center; margin: 8px 0 4px; }
-.timer.low { color: var(--wrong); }
-
-/* flashcard flip (motion allowed) */
-.flip { perspective: 1200px; margin: 8px 0 12px; }
-.flip-inner { position: relative; min-height: 280px; transition: transform .45s ease; transform-style: preserve-3d; }
-.flip.flipped .flip-inner { transform: rotateY(180deg); }
-.face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px 18px; overflow: auto; display: flex; flex-direction: column; }
-.face.back { transform: rotateY(180deg); }
-.face .facelabel { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-.face .q { font-size: 21px; font-weight: 600; line-height: 1.4; margin: auto 0; }
-.flipbtn { width: 100%; }
-.blank-gap { display: inline-block; min-width: 4em; border-bottom: 2px solid var(--accent); }
-.hl { background: #f3ead6; padding: 0 3px; border-radius: 3px; font-weight: 700; }
-.contrast { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.contrast > div { background: var(--surface-2); border-radius: 8px; padding: 10px; font-size: 16px; }
-.contrast b { display: block; margin-bottom: 4px; }
-@media (max-width: 420px) { .contrast { grid-template-columns: 1fr; } }
-.boxes { display: flex; gap: 4px; margin-top: 8px; }
-.boxes i { flex: 1; height: 6px; border-radius: 3px; background: var(--surface-2); }
-.boxes i.on { background: var(--accent); }
-
-/* quiz */
-.opt { display: block; width: 100%; min-height: 52px; text-align: left; padding: 12px 14px; margin-bottom: 8px; border-radius: var(--radius); border: 2px solid var(--line); background: var(--surface); cursor: pointer; line-height: 1.4; }
-.opt.is-right { border-color: var(--right); background: var(--right-soft); }
-.opt.is-wrong { border-color: var(--wrong); background: var(--wrong-soft); }
-
-/* story gaps */
-.gap { display: inline; min-height: 0; padding: 0 6px; border: 0; border-bottom: 2px solid var(--accent); background: var(--accent-soft); color: transparent; border-radius: 3px; cursor: pointer; font-size: inherit; line-height: inherit; }
-.gap.shown { color: var(--accent); background: transparent; font-weight: 700; }
-.script p { font-size: 19px; }
-
-/* code */
-pre.code { background: #fbfaf7; border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 0; overflow-x: auto; font-size: 14px; line-height: 1.55; margin: 4px 0 12px; }
-pre.code .ln { display: block; padding: 0 12px; white-space: pre; }
-pre.code button.ln { width: 100%; text-align: left; background: none; border: 0; font: inherit; cursor: pointer; min-height: 32px; }
-pre.code button.ln[aria-expanded="true"] { background: var(--accent-soft); }
-pre.code .note { display: block; white-space: normal; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 15px; background: var(--accent-soft); color: var(--text); padding: 6px 12px 8px 24px; border-left: 3px solid var(--accent); }
-.tk-com { color: #6b6b72; font-style: italic; }
-.tk-str { color: #7a4b12; }
-.tk-kw { color: #1f4e79; font-weight: 700; }
-.tk-num { color: #8a2f5a; }
-.tk-fn { color: #2d6b47; }
-
-@media (prefers-reduced-motion: reduce) {
-  .flip-inner, .bar > i { transition: none; }
-}
+h3 { font-size: 20px; margin: 26px 0 8px; }
+p { margin: 0 0 10px; }
+ul { margin: 0 0 10px; padding-left: 22px; } li { margin-bottom: 6px; }
+.muted { color: var(--muted); } .small { font-size: 15px; }
+.kicker { font-size: 13px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--accent); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; margin: 0 0 12px; }
+.sec { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 16px 4px; margin: 0 0 12px; border-left: 5px solid var(--line); }
+.sec .lbl { display: block; font-size: 13px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.sec.what { border-left-color: #8a8a91; } .sec.why { border-left-color: var(--accent); } .sec.got { border-left-color: var(--right); }
+.sec.show { border-left-color: #6b5220; } .sec.say { border-left-color: var(--accent); background: var(--accent-soft); } .sec.rem { border-left-color: #8a6d2f; background: #f7f1e3; }
+.example { font-style: italic; color: var(--muted); }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 10px 18px; border-radius: var(--r); border: 1px solid var(--accent); background: var(--accent); color: #fff; font-weight: 600; cursor: pointer; text-decoration: none; text-align: center; }
+.btn.light { background: var(--surface); color: var(--accent); }
+.btn.right { background: var(--right); border-color: var(--right); } .btn.wrong { background: var(--wrong); border-color: var(--wrong); }
+.btn.full { width: 100%; }
+.row { display: flex; gap: 8px; margin: 12px 0; } .row > .btn { flex: 1; }
+.item { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 54px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); margin-bottom: 8px; text-decoration: none; color: var(--text); }
+.item .grow { flex: 1; }
+.tag { font-size: 13px; font-weight: 600; padding: 2px 9px; border-radius: 12px; background: var(--soft); color: var(--muted); white-space: nowrap; }
+.tag.ok { background: var(--right-soft); color: var(--right); } .tag.again { background: var(--wrong-soft); color: var(--wrong); }
+.bar { height: 8px; background: var(--soft); border-radius: 4px; overflow: hidden; margin: 6px 0 12px; }
+.bar i { display: block; height: 100%; background: var(--accent); transition: width .4s; }
+pre.code { background: #fbfaf7; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; overflow-x: auto; font-size: 13.5px; line-height: 1.55; margin: 6px 0 10px; }
+details { margin: 4px 0 10px; } summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--accent); font-weight: 600; }
+.notes li { font-size: 15px; } .notes code { font-size: 13px; background: var(--soft); padding: 1px 4px; border-radius: 4px; }
+.q { font-size: 20px; font-weight: 600; line-height: 1.4; }
+.timer { font: 600 40px/1 ui-monospace, Menlo, monospace; text-align: center; margin: 6px 0; }
+table { width: 100%; border-collapse: collapse; font-size: 15px; } td { border-bottom: 1px solid var(--line); padding: 7px 4px; vertical-align: top; } td:first-child { color: var(--muted); width: 38%; }
+@media (prefers-reduced-motion: reduce) { .bar i { transition: none; } }
 </style>
 </head>
 <body>
-<a href="#main" class="skip">Skip to content</a>
-<header class="top">
-  <button class="backlink" id="back" hidden aria-label="Back">&lsaquo; Back</button>
-  <h1 id="title">AT3 Defence Study</h1>
-</header>
-<nav class="main" id="nav" aria-label="Main"></nav>
+<header><button class="back" id="back" hidden aria-label="Back">&lsaquo; Back</button><h1 id="title">AT3 Defence Study</h1></header>
+<nav id="nav" aria-label="Main">
+  <a href="#/" data-tab="home">Home</a>
+  <a href="#/topics" data-tab="topics">Topics</a>
+  <a href="#/exam" data-tab="exam">Exam Qs</a>
+  <a href="#/test" data-tab="test">Test yourself</a>
+</nav>
 <main id="main" tabindex="-1"></main>
 
-<script>
-/* ============================================================
-   CONFIG: settings you may change. No game features.
-   ============================================================ */
-var CONFIG = {
-  storageKey: 'at3-defence-study-v1',
-  examTitle: 'AT3 Oral Defence',
-  newCardsPerSession: 10,          // new flashcards introduced per session
-  againAfter: 4,                   // "Didn't know" cards return after this many other cards
-  boxWeights: [8, 4, 2, 1, 0.5],   // draw weights for boxes 1 to 5 (box 5 = mastered)
-  quizRoundSize: 10,
-  answerSeconds: 40,               // Answer practice and Mock defence
-  storySeconds: 90,
-  mockSize: 8,
-  marksPerRating: { excellent: 40, good: 30, missed: 0 },  // self-rated estimate only
-  longAnswerWords: 80              // answers longer than this show their short version
-};
-
-/* ============================================================
-   CONTENT is filled by the five content files.
-   Shapes expected (every item has a stable id):
-   CONTENT.home     = { rubric:[{mark,name,sees,evidence}], plan:[{day,text}] }
-   CONTENT.parts    = [{ id, title }]
-   CONTENT.learn    = [{ id, part, title, plain:[items], project:[items], say:string|[items],
-                         remember:[items], point:{cells:[n], text}, trap?:string,
-                         recall:[{q,a}] (3) }]
-                      items: "text" | {list:[...]} | {table:{head:[...], rows:[[...]]}}
-                      inline marks: **bold**, `code`
-   CONTENT.glossary = [{ id, term, plain, lesson? }]
-   CONTENT.cards    = [{ id, lesson, cat:'numbers'|'models'|'concepts'|'prep'|'at2'|'rules',
-                         type:'qa'|'blank'|'contrast'|'sayit', priority?:true,
-                         q, a }]  blank: text with {{answer}} instead of q/a
-                                  contrast: q, pair:[{name,text},{name,text}]
-                                  sayit: q, what, evidence, why
-   CONTENT.quiz     = [{ id, set:'at3'|'at2', kind, q, options:[correct, closest wrong, ...],
-                         why, near, section, lesson }]
-   CONTENT.story    = { intro, blocks:[{id, text, plain, gaps:[...]}], closing, note }
-   CONTENT.practice = [{ id, group:'official'|'followup'|'at2', n, q, good, excellent,
-                         short?, show:{cells:[n], text}, lesson }]
-   CONTENT.code     = [{ id, title, cells:[n], section, lines:[{c, n?}], plain, say,
-                         output, lesson? }]
-   ============================================================ */
-var CONTENT = window.CONTENT || (window.CONTENT = {});
-</script>
-<script src="content-learn.js"></script>
-<script src="content-cards.js"></script>
-<script src="content-quiz.js"></script>
+<script>var CONTENT = window.CONTENT || (window.CONTENT = {});</script>
+<script src="content-topics.js"></script>
 <script src="content-practice.js"></script>
 <script src="content-code.js"></script>
 <script>
 (function () {
   'use strict';
-  var C = window.CONTENT;
-  var LEARN = C.learn || [], PARTS = C.parts || [], CARDS = C.cards || [], QUIZ = C.quiz || [],
-      PRACTICE = C.practice || [], CODE = C.code || [], GLOSSARY = C.glossary || [],
-      STORY = C.story || null, HOME = C.home || { rubric: [], plan: [] };
+  var C = window.CONTENT, TOPICS = C.topics || [], GROUPS = C.groups || [], EXAM = C.practice || [], STORY = C.story, CODE = C.code || [], NUMBERS = C.numbers || [];
+  var KEY = 'at3-study-simple-v1', ANSWER_SECONDS = 40, STORY_SECONDS = 90, TEST_ROUND = 10;
 
-  /* ---------------- helpers ---------------- */
+  /* ---------- helpers ---------- */
   function $(s, el) { return (el || document).querySelector(s); }
   function $$(s, el) { return Array.prototype.slice.call((el || document).querySelectorAll(s)); }
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
-  // inline marks after escaping: **bold** and `code`
-  function fmt(s) {
-    return esc(s).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/`([^`]+)`/g, '<code class="inline">$1</code>');
-  }
-  function items(arr) {
-    if (arr == null) return '';
-    if (!Array.isArray(arr)) arr = [arr];
-    return arr.map(function (it) {
-      if (typeof it === 'string') return '<p>' + fmt(it) + '</p>';
-      if (it.list) return '<ul>' + it.list.map(function (li) { return '<li>' + fmt(li) + '</li>'; }).join('') + '</ul>';
-      if (it.table) return table(it.table);
-      return '';
-    }).join('');
-  }
-  function table(t) {
-    return '<div class="tablewrap"><table class="t">' + (t.caption ? '<caption class="muted small" style="text-align:left">' + fmt(t.caption) + '</caption>' : '') +
-      '<thead><tr>' + t.head.map(function (h) { return '<th scope="col">' + fmt(h) + '</th>'; }).join('') + '</tr></thead><tbody>' +
-      t.rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + fmt(c) + '</td>'; }).join('') + '</tr>'; }).join('') +
-      '</tbody></table></div>';
-  }
-  function plainText(arr) {
-    if (arr == null) return '';
-    if (!Array.isArray(arr)) arr = [arr];
-    return arr.map(function (it) { return typeof it === 'string' ? it : it.list ? it.list.join('. ') : ''; }).join(' ').replace(/\*\*|`/g, '');
-  }
-  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
-  function byId(list, id) { for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i]; return null; }
-  function words(s) { return String(s || '').trim().split(/\s+/).filter(Boolean).length; }
+  function fmt(s) { return esc(s).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/`([^`]+)`/g, '<code>$1</code>'); }
+  function list(arr) { arr = [].concat(arr || []); return arr.length > 1 ? '<ul>' + arr.map(function (x) { return '<li>' + fmt(x) + '</li>'; }).join('') + '</ul>' : '<p>' + fmt(arr[0] || '') + '</p>'; }
+  function sec(cls, label, html) { return '<section class="sec ' + cls + '"><span class="lbl">' + label + '</span>' + html + '</section>'; }
+  function byId(arr, id) { for (var i = 0; i < arr.length; i++) if (arr[i].id === id) return arr[i]; return null; }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function mmss(ms) { var s = Math.ceil(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
-  function plural(n, one, many) { return n + ' ' + (n === 1 ? one : (many || one + 's')); }
-  function block(kind, label, html) { return '<section class="block k-' + kind + '" aria-label="' + esc(label) + '"><span class="label">' + esc(label) + '</span>' + html + '</section>'; }
-  function cellText(cells) { return (cells || []).length ? (cells.length > 1 ? 'Cells ' : 'Cell ') + cells.join(', ') : ''; }
-  function codeStepForCell(cell) { for (var i = 0; i < CODE.length; i++) if ((CODE[i].cells || []).indexOf(cell) >= 0) return i; return -1; }
+  function bar(f) { return '<div class="bar" role="progressbar" aria-valuenow="' + Math.round(f * 100) + '" aria-valuemin="0" aria-valuemax="100"><i style="width:' + (f * 100).toFixed(1) + '%"></i></div>'; }
+  function cellsText(c) { return c && c.length ? (c.length > 1 ? 'Cells ' : 'Cell ') + c.join(', ') : ''; }
 
-  /* ---------------- storage ---------------- */
-  var storageOK = true;
-  function blank() { return { lessons: {}, recall: {}, cards: {}, quiz: { stats: {}, weak: [], rounds: [] }, practice: {}, story: { runs: 0, ratings: [] }, mocks: [] }; }
-  var S = blank();
-  try {
-    var raw = localStorage.getItem(CONFIG.storageKey);
-    if (raw) { var parsed = JSON.parse(raw); for (var k in parsed) S[k] = parsed[k]; }
-  } catch (e) { storageOK = false; }
-  function save() { try { localStorage.setItem(CONFIG.storageKey, JSON.stringify(S)); } catch (e) { storageOK = false; } }
+  /* ---------- saved progress (try/catch so the app still works if storage is blocked) ---------- */
+  function fresh() { return { topics: {}, exam: {}, test: {} }; }
+  var S = fresh();
+  try { var raw = localStorage.getItem(KEY); if (raw) { var p = JSON.parse(raw); for (var k in p) S[k] = p[k]; } } catch (e) { /* storage blocked */ }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* storage blocked */ } }
 
-  /* ---------------- speech ---------------- */
-  var canSpeak = 'speechSynthesis' in window && typeof window.SpeechSynthesisUtterance === 'function';
-  function speak(text) {
-    if (!canSpeak) return;
-    try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(text.replace(/\*\*|`/g, '')); u.rate = 0.95; speechSynthesis.speak(u); } catch (e) { /* ignore */ }
-  }
-  function stopSpeaking() { if (canSpeak) try { speechSynthesis.cancel(); } catch (e) { /* ignore */ } }
-
-  /* ---------------- countdown (timestamp based) ---------------- */
-  var cleanups = [];
-  function countdown(seconds, onTick, onEnd) {
-    var end = Date.now() + seconds * 1000, done = false, iv;
-    function tick() {
-      var left = Math.max(0, end - Date.now());
-      onTick(left);
-      if (left <= 0 && !done) { finish(); onEnd(); }
-    }
-    function finish() { done = true; clearInterval(iv); document.removeEventListener('visibilitychange', tick); }
-    iv = setInterval(tick, 250);
-    document.addEventListener('visibilitychange', tick);
-    tick();
-    var api = { stop: function () { if (!done) finish(); }, running: function () { return !done; } };
-    cleanups.push(api.stop);
-    return api;
-  }
-  function timerHtml(id) { return '<div class="timer" id="' + id + '" role="timer" aria-label="Time left">' + mmss(CONFIG.answerSeconds * 1000) + '</div>'; }
-
-  /* ---------------- shared bits ---------------- */
-  function bar(frac, cls) { return '<div class="bar ' + (cls || '') + '" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + Math.round(frac * 100) + '"><i style="width:' + (frac * 100).toFixed(1) + '%"></i></div>'; }
-  function fillBars(root) { /* progress fill animates in after paint */ requestAnimationFrame(function () { $$('.bar > i', root).forEach(function (i) { var w = i.style.width; i.style.width = '0'; requestAnimationFrame(function () { i.style.width = w; }); }); }); }
-  function emptyNote(what) { return '<div class="card muted">No ' + esc(what) + ' loaded yet. Add the content file and refresh.</div>'; }
-  function lessonLink(id, text) { var l = byId(LEARN, id); return l ? '<a href="#/learn/' + esc(id) + '">' + esc(text || ('Open lesson: ' + l.title)) + '</a>' : ''; }
-
-  /* =========================================================
-     PAGES
-     ========================================================= */
-  var pages = {};
-  var MODES = [
-    { href: '#/learn', name: 'Learn', desc: 'Lessons from zero, in order. Start here.' },
-    { href: '#/story', name: 'Story', desc: 'Your 90-second opening, in 3 stages.' },
-    { href: '#/cards', name: 'Flashcards', desc: 'Short facts and numbers, spaced repetition.' },
-    { href: '#/quiz', name: 'Quiz', desc: 'Four-option questions in rounds of 10.' },
-    { href: '#/practice', name: 'Answer practice', desc: 'Answer exam questions out loud in 40 seconds.' },
-    { href: '#/code', name: 'Code walkthrough', desc: 'Step through the notebook cells you will show.' },
-    { href: '#/progress', name: 'Progress', desc: 'Counts, weakest items and Mock defence.' }
-  ];
-
-  function nextUp() {
-    for (var i = 0; i < LEARN.length; i++) if (S.lessons[LEARN[i].id] !== 'got') return { href: '#/learn/' + LEARN[i].id, label: 'Next lesson: ' + LEARN[i].title };
-    var due = CARDS.filter(function (c) { var s = S.cards[c.id]; return !s || s.box <= 2; }).length;
-    if (due) return { href: '#/cards', label: 'Flashcards: ' + plural(due, 'card') + ' new or in box 1 to 2' };
-    return { href: '#/practice', label: 'Answer practice' };
+  /* ---------- speech + timer (timer uses timestamps, so it stays right if iOS pauses the page) ---------- */
+  var canSpeak = 'speechSynthesis' in window;
+  function speak(t) { if (!canSpeak) return; try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(t.replace(/\*\*/g, '')); u.rate = 0.95; speechSynthesis.speak(u); } catch (e) { /* ignore */ } }
+  var stops = [];
+  function countdown(sec, el, done) {
+    var end = Date.now() + sec * 1000, iv;
+    function tick() { var left = Math.max(0, end - Date.now()); el.textContent = mmss(left); if (left <= 0) { stop(); done(); } }
+    function stop() { clearInterval(iv); document.removeEventListener('visibilitychange', tick); }
+    iv = setInterval(tick, 250); document.addEventListener('visibilitychange', tick); tick(); stops.push(stop); return stop;
   }
 
-  pages.home = function () {
-    var nu = nextUp();
-    var got = LEARN.filter(function (l) { return S.lessons[l.id] === 'got'; }).length;
-    return {
-      title: CONFIG.examTitle,
-      html:
-        '<h2>' + esc(CONFIG.examTitle) + '</h2>' +
-        '<p class="muted">Learn your project from zero, then practise every likely question out loud.</p>' +
-        (LEARN.length ? '<a class="btn block-w" href="' + nu.href + '">' + esc(nu.label) + '</a>' + '<p class="small muted" style="margin-top:8px">Lessons marked "Got it": ' + got + ' of ' + LEARN.length + '</p>' + bar(LEARN.length ? got / LEARN.length : 0) : emptyNote('lessons')) +
-        (storageOK ? '' : '<div class="status wrong">This browser is blocking storage. The app works, but progress will not be kept after you close it.</div>') +
-        '<h3>The 7 modes, in learning order</h3>' +
-        MODES.map(function (m, i) { return '<a class="listbtn" href="' + m.href + '"><span class="tag">' + (i + 1) + '</span><span class="grow"><strong>' + esc(m.name) + '</strong><br><span class="small muted">' + esc(m.desc) + '</span></span></a>'; }).join('') +
-        (HOME.rubric && HOME.rubric.length ? '<h3>How you are marked</h3>' + table({ head: ['Mark', 'What the marker sees', 'Your evidence'], rows: HOME.rubric.map(function (r) { return ['**' + r.mark + ' ' + r.name + '**', r.sees, r.evidence]; }) }) : '') +
-        (HOME.plan && HOME.plan.length ? '<h3>5-day practice plan</h3>' + table({ head: ['Day', 'Practice'], rows: HOME.plan.map(function (p) { return [String(p.day), p.text]; }) }) : '') +
-        '<h3>Reset</h3><button class="btn plain" id="reset">Reset all progress</button>',
-      after: function (root) {
-        fillBars(root);
-        $('#reset', root).onclick = function () {
-          if (confirm('Reset all progress? Lessons, cards, quiz, practice and story marks will be cleared. This cannot be undone.')) { S = blank(); save(); render(); }
-        };
-      }
-    };
+  /* ---------- pages ---------- */
+  var P = {};
+  function nextTopic() { for (var i = 0; i < TOPICS.length; i++) if (S.topics[TOPICS[i].id] !== 'ok') return TOPICS[i]; return null; }
+
+  P.home = function () {
+    var done = TOPICS.filter(function (t) { return S.topics[t.id] === 'ok'; }).length, nt = nextTopic();
+    var nailed = EXAM.filter(function (q) { return S.exam[q.id] === 'ok'; }).length;
+    return { title: 'AT3 Defence Study', html:
+      '<h2>Learn your project, then practise.</h2>' +
+      '<p class="muted">Every topic answers: what is it, why did I use it, what did I get, and how do I say it.</p>' +
+      (nt ? '<a class="btn full" href="#/topic/' + nt.id + '">Next topic: ' + esc(nt.title) + '</a>' : '<a class="btn full" href="#/exam">All topics done. Practise the exam questions</a>') +
+      '<p class="small" style="margin-top:10px">Topics understood: ' + done + ' of ' + TOPICS.length + '</p>' + bar(TOPICS.length ? done / TOPICS.length : 0) +
+      '<p class="small">Exam questions nailed: ' + nailed + ' of ' + EXAM.length + '</p>' + bar(EXAM.length ? nailed / EXAM.length : 0) +
+      '<h3>How to answer any question</h3><div class="card"><p><strong>1. What</strong>: the direct answer, 1 sentence.<br><strong>2. Evidence</strong>: a number and where it is in the notebook.<br><strong>3. Why</strong>: the reason or trade-off, 1 to 2 sentences.</p><p class="small muted" style="margin:0">1 + 2 = Good (30). Add 3 = Excellent (40). About 40 seconds, then stop.</p></div>' +
+      '<a class="item" href="#/story"><span class="grow"><strong>My 90-second opening</strong><br><span class="small muted">Say this first in the exam</span></span>&rsaquo;</a>' +
+      '<a class="item" href="#/numbers"><span class="grow"><strong>Numbers to know</strong><br><span class="small muted">All the key results on one page</span></span>&rsaquo;</a>' +
+      '<h3>Reset</h3><button class="btn light" id="reset">Reset all progress</button>',
+      after: function (m) { $('#reset', m).onclick = function () { if (confirm('Reset all progress? This cannot be undone.')) { S = fresh(); save(); render(); } }; } };
   };
 
-  /* ---------------- LEARN ---------------- */
-  pages.learn = function () {
-    if (!LEARN.length) return { title: 'Learn', html: '<h2>Learn</h2>' + emptyNote('lessons') };
-    var got = LEARN.filter(function (l) { return S.lessons[l.id] === 'got'; }).length;
-    var parts = PARTS.length ? PARTS : [{ id: '', title: 'Lessons' }];
-    return {
-      title: 'Learn',
-      html: '<h2>Learn</h2><p class="muted">Work from top to bottom. Each lesson: In plain words, In my project, Say it, Remember it, Point at, then Cover and recall.</p>' +
-        '<p class="small">' + got + ' of ' + LEARN.length + ' lessons marked "Got it".</p>' + bar(got / LEARN.length) +
-        parts.map(function (p) {
-          var ls = LEARN.filter(function (l) { return !p.id || l.part === p.id; });
-          if (!ls.length) return '';
-          return '<h3>' + esc(p.title) + '</h3>' + ls.map(function (l) {
-            var st = S.lessons[l.id];
-            return '<a class="listbtn" href="#/learn/' + esc(l.id) + '"><span class="grow">' + esc(l.title) + '</span>' +
-              (st === 'got' ? '<span class="tag got">Got it</span>' : st === 'review' ? '<span class="tag review">Review again</span>' : '') + '</a>';
-          }).join('');
-        }).join('') +
-        '<h3>Glossary</h3><a class="listbtn" href="#/glossary"><span class="grow">Every jargon word, in plain words</span><span class="meta">' + GLOSSARY.length + ' terms</span></a>',
-      after: fillBars
-    };
+  P.topics = function () {
+    return { title: 'Topics', html: '<h2>Topics</h2><p class="muted">Work from top to bottom. Mark a topic "I understand" when you can explain it out loud.</p>' +
+      GROUPS.map(function (g) {
+        return '<h3>' + esc(g.title) + '</h3>' + TOPICS.filter(function (t) { return t.group === g.id; }).map(function (t) {
+          var st = S.topics[t.id];
+          return '<a class="item" href="#/topic/' + t.id + '"><span class="grow">' + esc(t.title) + '</span>' + (st === 'ok' ? '<span class="tag ok">Understood</span>' : st === 'again' ? '<span class="tag again">Review</span>' : '') + '</a>';
+        }).join('');
+      }).join('') };
   };
 
-  pages.lesson = function (id) {
-    var i = -1; for (var k = 0; k < LEARN.length; k++) if (LEARN[k].id === id) i = k;
-    if (i < 0) return pages.notFound();
-    var l = LEARN[i], prev = LEARN[i - 1], next = LEARN[i + 1];
-    var part = byId(PARTS, l.part);
-    var linked = CARDS.filter(function (c) { return c.lesson === l.id; }).length;
-    var pt = l.point || {};
-    var step = (pt.cells || []).length ? codeStepForCell(pt.cells[0]) : -1;
-    var recall = (l.recall || []).map(function (r, j) {
-      var key = l.id + ':' + j, st = S.recall[key];
-      return '<div class="card" data-recall="' + j + '"><p><strong>' + fmt(r.q) + '</strong></p>' +
-        '<p class="small muted">Say your answer out loud first.</p>' +
-        '<button class="btn secondary block-w" data-reveal>Reveal answer</button>' +
-        '<div data-ans hidden><p style="margin-top:12px">' + fmt(r.a) + '</p>' +
-        '<div class="row"><button class="btn right" data-mark="got" aria-pressed="' + (st === 'got') + '">Got it</button><button class="btn wrong" data-mark="not" aria-pressed="' + (st === 'not') + '">Not yet</button></div></div>' +
-        (st ? '<p class="small muted" data-last>Last time: ' + (st === 'got' ? 'Got it' : 'Not yet') + '</p>' : '') + '</div>';
+  P.topic = function (id) {
+    var i = -1; TOPICS.forEach(function (t, k) { if (t.id === id) i = k; });
+    if (i < 0) return P.missing();
+    var t = TOPICS[i], prev = TOPICS[i - 1], next = TOPICS[i + 1], sh = t.show || {}, step = sh.code ? byId(CODE, sh.code) : null;
+    var code = step ? '<pre class="code" aria-label="Notebook code">' + step.lines.map(function (l) { return esc(l.c); }).join('\n') + '</pre>' +
+      '<details><summary>Explain the code line by line</summary><ul class="notes">' + step.lines.filter(function (l) { return l.n; }).map(function (l) { var c = l.c.trim(); return '<li><code>' + esc(c.slice(0, 48)) + (c.length > 48 ? '…' : '') + '</code><br>' + fmt(l.n) + '</li>'; }).join('') + '</ul></details>' : '';
+    var checks = (t.check || []).map(function (c, k) {
+      return '<div class="card"><p><strong>' + fmt(c.q) + '</strong></p><button class="btn light full" data-reveal="' + k + '">Say it out loud, then tap to check</button><p data-ans="' + k + '" hidden style="margin-top:10px">' + fmt(c.a) + '</p></div>';
     }).join('');
-    return {
-      title: 'Lesson ' + (i + 1) + ' of ' + LEARN.length, back: '#/learn',
-      html: '<div class="kicker">' + esc(part ? part.title : '') + ' · Lesson ' + (i + 1) + '</div><h2>' + esc(l.title) + '</h2>' +
-        block('plain', 'In plain words', items(l.plain)) +
-        block('project', 'In my project', items(l.project)) +
-        block('say', 'Say it', items(l.say) + (canSpeak ? '<p><button class="btn secondary" data-listen>Listen</button></p>' : '')) +
-        block('remember', 'Remember it', items(l.remember)) +
-        (l.trap ? block('trap', 'Common mistake or trap', items(l.trap)) : '') +
-        block('point', 'Point at', '<p>' + (cellText(pt.cells) ? '<strong>' + esc(cellText(pt.cells)) + '</strong>. ' : '') + fmt(pt.text || '') + '</p>' +
-          (step >= 0 ? '<p><a href="#/code/' + (step + 1) + '">Open this step in Code walkthrough</a></p>' : '')) +
-        block('recall', 'Cover and recall', '<p class="small">Try each one out loud, then tap to check.</p>' + recall) +
-        '<h3>Mark this lesson</h3><div class="row"><button class="btn right" data-lesson="got" aria-pressed="' + (S.lessons[l.id] === 'got') + '">Got it</button><button class="btn wrong" data-lesson="review" aria-pressed="' + (S.lessons[l.id] === 'review') + '">Review again</button></div>' +
-        '<div id="lessonStatus" role="status"></div>' +
-        (linked ? '<a class="btn secondary block-w" href="#/cards/session?lesson=' + esc(l.id) + '">Practise this lesson\'s ' + linked + ' flashcards</a>' : '') +
-        '<div class="row">' + (prev ? '<a class="btn plain" href="#/learn/' + esc(prev.id) + '">&lsaquo; Previous</a>' : '') + (next ? '<a class="btn plain" href="#/learn/' + esc(next.id) + '">Next &rsaquo;</a>' : '<a class="btn plain" href="#/glossary">Glossary &rsaquo;</a>') + '</div>',
-      after: function (root) {
-        var ls = $('[data-listen]', root);
-        if (ls) ls.onclick = function () { speak(plainText(l.say)); };
-        $$('[data-recall]', root).forEach(function (card) {
-          var j = card.getAttribute('data-recall');
-          $('[data-reveal]', card).onclick = function (e) { $('[data-ans]', card).hidden = false; e.currentTarget.hidden = true; };
-          $$('[data-mark]', card).forEach(function (b) {
-            b.onclick = function () {
-              S.recall[l.id + ':' + j] = b.getAttribute('data-mark'); save();
-              $$('[data-mark]', card).forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-            };
-          });
-        });
-        $$('[data-lesson]', root).forEach(function (b) {
-          b.onclick = function () {
-            var v = b.getAttribute('data-lesson'); S.lessons[l.id] = v; save();
-            $$('[data-lesson]', root).forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-            $('#lessonStatus', root).innerHTML = '<div class="status ' + (v === 'got' ? 'right' : 'wrong') + '">' +
-              (v === 'got' ? 'Marked "Got it".' + (next ? ' Next: ' + esc(next.title) + '.' : '') : 'Marked "Review again". It will show in Progress under weakest items.') + '</div>';
-          };
-        });
-      }
-    };
+    return { title: t.title, back: '#/topics', html:
+      '<div class="kicker">' + esc((byId(GROUPS, t.group) || {}).title || '') + '</div><h2>' + esc(t.title) + '</h2>' +
+      sec('what', 'What is it?', list(t.what) + (t.example ? '<p class="example">Example: ' + fmt(t.example) + '</p>' : '')) +
+      sec('why', 'Why did I use it?', list(t.why)) +
+      sec('got', 'What did I get?', list(t.got)) +
+      sec('show', 'Show it in the notebook', (cellsText(sh.cells) ? '<p><strong>' + cellsText(sh.cells) + '</strong></p>' : '') + code + (sh.point ? '<p>Point at: ' + fmt(sh.point) + '</p>' : '')) +
+      sec('say', 'Say it in the exam', '<p>' + fmt(t.say) + '</p>' + (canSpeak ? '<p><button class="btn light" id="listen">Listen</button></p>' : '')) +
+      sec('rem', 'Remember', '<p><strong>' + fmt(t.remember) + '</strong></p>') +
+      '<h3>Check yourself</h3>' + checks +
+      '<div class="row"><button class="btn right" data-mark="ok">I understand</button><button class="btn wrong" data-mark="again">Review later</button></div>' +
+      '<div class="row">' + (prev ? '<a class="btn light" href="#/topic/' + prev.id + '">&lsaquo; Previous</a>' : '') + (next ? '<a class="btn light" href="#/topic/' + next.id + '">Next &rsaquo;</a>' : '') + '</div>',
+      after: function (m) {
+        var ls = $('#listen', m); if (ls) ls.onclick = function () { speak(t.say); };
+        $$('[data-reveal]', m).forEach(function (b) { b.onclick = function () { $('[data-ans="' + b.dataset.reveal + '"]', m).hidden = false; b.hidden = true; }; });
+        $$('[data-mark]', m).forEach(function (b) { b.onclick = function () { S.topics[t.id] = b.dataset.mark; save(); location.hash = b.dataset.mark === 'ok' && next ? '#/topic/' + next.id : '#/topics'; }; });
+      } };
   };
 
-  var glossQuery = '';
-  pages.glossary = function () {
-    var list = GLOSSARY.slice().sort(function (a, b) { return a.term.toLowerCase() < b.term.toLowerCase() ? -1 : 1; });
-    return {
-      title: 'Glossary', back: '#/learn',
-      html: '<h2>Glossary</h2><p class="muted">Every jargon word, A to Z.</p>' +
-        '<label for="gq" class="small">Search</label><input type="search" id="gq" value="' + esc(glossQuery) + '" autocomplete="off" autocapitalize="off" spellcheck="false">' +
-        '<div id="glist" style="margin-top:12px"></div>',
-      after: function (root) {
-        var inp = $('#gq', root), out = $('#glist', root);
-        function draw() {
-          var q = inp.value.trim().toLowerCase(); glossQuery = inp.value;
-          var hits = list.filter(function (g) { return !q || (g.term + ' ' + g.plain).toLowerCase().indexOf(q) >= 0; });
-          out.innerHTML = hits.length ? hits.map(function (g) {
-            return '<div class="card"><strong>' + esc(g.term) + '</strong>' + block('plain', 'In plain words', '<p>' + fmt(g.plain) + '</p>') + (g.lesson ? '<p class="small">' + lessonLink(g.lesson) + '</p>' : '') + '</div>';
-          }).join('') : (GLOSSARY.length ? '<p class="muted">No term matches "' + esc(inp.value) + '".</p>' : emptyNote('glossary terms'));
-        }
-        inp.oninput = draw; draw();
-      }
-    };
+  var GROUP_NAMES = { official: 'The 5 official questions', followup: 'Follow-up questions', at2: 'AT2 questions' };
+  P.exam = function () {
+    return { title: 'Exam questions', html: '<h2>Exam questions</h2><p class="muted">Read the question, answer out loud (about 40 seconds), then check the model answer.</p>' +
+      Object.keys(GROUP_NAMES).map(function (g) {
+        return '<h3>' + GROUP_NAMES[g] + '</h3>' + EXAM.filter(function (q) { return q.group === g; }).map(function (q) {
+          var st = S.exam[q.id];
+          return '<a class="item" href="#/q/' + q.id + '"><span class="grow">' + fmt(q.q) + '</span>' + (st === 'ok' ? '<span class="tag ok">Nailed</span>' : st === 'again' ? '<span class="tag again">Practise</span>' : '') + '</a>';
+        }).join('');
+      }).join('') };
   };
 
-  /* ---------------- STORY ---------------- */
-  var storyStage = 'read';
-  pages.story = function () {
-    if (!STORY) return { title: 'Story', html: '<h2>Story</h2>' + emptyNote('story') };
-    var tabs = [['read', 'a) Read'], ['gaps', 'b) Fill the gaps'], ['memory', 'c) From memory']];
-    var body = '';
-    if (storyStage === 'read') {
-      body = STORY.blocks.map(function (b, i) {
-        return '<div class="card"><p class="kicker">Part ' + (i + 1) + '</p><div class="script"><p>' + fmt(b.text) + '</p></div>' +
-          '<details><summary class="small" style="min-height:48px;display:flex;align-items:center;cursor:pointer">In plain words</summary>' + block('plain', 'In plain words', '<p>' + fmt(b.plain) + '</p>') + '</details></div>';
-      }).join('') + '<div class="card script"><p><strong>' + fmt(STORY.closing) + '</strong></p></div>';
-    } else if (storyStage === 'gaps') {
-      body = '<p class="small muted">Say the hidden words out loud, then tap a gap to check it.</p>' +
-        STORY.blocks.map(function (b, i) { return '<div class="card script"><p class="kicker">Part ' + (i + 1) + '</p><p>' + gapText(b.text, b.gaps || []) + '</p></div>'; }).join('') +
-        '<div class="card script"><p><strong>' + fmt(STORY.closing) + '</strong></p></div><button class="btn plain" id="hideAll">Hide all gaps again</button>';
-    } else {
-      body = '<p class="small muted">The script is hidden. Start the countdown and say it out loud. Tap Stop when you finish.</p>' +
-        '<div class="card"><div class="timer" id="stimer" role="timer" aria-label="Time left">' + mmss(CONFIG.storySeconds * 1000) + '</div>' +
-        '<div class="row"><button class="btn" id="sstart">Start ' + CONFIG.storySeconds + ' seconds</button><button class="btn plain" id="sstop" hidden>Stop</button></div></div>' +
-        '<div id="sreveal" hidden><button class="btn secondary block-w" id="sshow">Reveal the script</button>' +
-        '<div id="sscript" hidden>' + STORY.blocks.map(function (b) { return '<div class="card script"><p>' + fmt(b.text) + '</p></div>'; }).join('') +
-        '<div class="card script"><p><strong>' + fmt(STORY.closing) + '</strong></p></div>' +
-        '<h3>How close were you?</h3><div class="row"><button class="btn right" data-rate="word">Word for word</button><button class="btn" data-rate="mostly">Mostly</button><button class="btn wrong" data-rate="lost">Lost it</button></div>' +
-        '<div id="sstatus" role="status"></div><button class="btn plain block-w" id="sagain">Practise again</button></div></div>';
-    }
-    var last = S.story.ratings[S.story.ratings.length - 1];
-    return {
-      title: 'Story',
-      html: '<h2>Your 90-second story</h2><p class="muted">' + fmt(STORY.intro || '') + '</p>' +
-        '<div class="chips" role="group" aria-label="Stage">' + tabs.map(function (t) { return '<button class="chip" data-stage="' + t[0] + '" aria-pressed="' + (storyStage === t[0]) + '">' + t[1] + '</button>'; }).join('') + '</div>' +
-        body + (STORY.note ? '<p class="small muted">' + fmt(STORY.note) + '</p>' : '') +
-        (last ? '<p class="small muted">Practised from memory ' + plural(S.story.runs, 'time') + '. Last rating: ' + esc(storyRatingName(last.r)) + '.</p>' : ''),
-      after: function (root) {
-        $$('[data-stage]', root).forEach(function (b) { b.onclick = function () { storyStage = b.getAttribute('data-stage'); render(); }; });
-        $$('.gap', root).forEach(function (g) { g.onclick = function () { g.classList.toggle('shown'); g.setAttribute('aria-label', g.classList.contains('shown') ? g.textContent : 'Hidden word, tap to reveal'); }; });
-        var ha = $('#hideAll', root); if (ha) ha.onclick = function () { $$('.gap', root).forEach(function (g) { g.classList.remove('shown'); g.setAttribute('aria-label', 'Hidden word, tap to reveal'); }); };
-        if (storyStage !== 'memory') return;
-        var t = null, el = $('#stimer', root);
-        function stopped() { if (t) t.stop(); $('#sstop', root).hidden = true; $('#sstart', root).hidden = true; $('#sreveal', root).hidden = false; }
-        $('#sstart', root).onclick = function () {
-          $('#sstart', root).hidden = true; $('#sstop', root).hidden = false;
-          t = countdown(CONFIG.storySeconds, function (left) { el.textContent = mmss(left); el.classList.toggle('low', left < 10000); }, stopped);
-        };
-        $('#sstop', root).onclick = stopped;
-        $('#sshow', root).onclick = function (e) { $('#sscript', root).hidden = false; e.currentTarget.hidden = true; };
-        $$('[data-rate]', root).forEach(function (b) {
-          b.onclick = function () {
-            var r = b.getAttribute('data-rate'); S.story.runs++; S.story.ratings.push({ r: r, at: Date.now() }); save();
-            $('#sstatus', root).innerHTML = '<div class="status">Saved: ' + esc(storyRatingName(r)) + '. ' + (r === 'word' ? 'Keep it fresh with one more run tomorrow.' : 'Go back to "Fill the gaps" once, then try again.') + '</div>';
-          };
-        });
-        $('#sagain', root).onclick = function () { render(); };
-      }
-    };
-  };
-  function storyRatingName(r) { return { word: 'Word for word', mostly: 'Mostly', lost: 'Lost it' }[r] || r; }
-  function gapText(text, gaps) {
-    // hide each gap phrase once, in order of appearance; escape everything first
-    var marks = [];
-    gaps.forEach(function (g) {
-      var from = 0, idx;
-      while ((idx = text.indexOf(g, from)) >= 0) {
-        var clash = marks.some(function (m) { return idx < m.e && idx + g.length > m.s; });
-        if (!clash) { marks.push({ s: idx, e: idx + g.length }); break; }
-        from = idx + 1;
-      }
-    });
-    marks.sort(function (a, b) { return a.s - b.s; });
-    var out = '', pos = 0;
-    marks.forEach(function (m) {
-      out += fmt(text.slice(pos, m.s)) + '<button class="gap" aria-label="Hidden word, tap to reveal">' + esc(text.slice(m.s, m.e)) + '</button>';
-      pos = m.e;
-    });
-    return out + fmt(text.slice(pos));
-  }
-
-  /* ---------------- FLASHCARDS ---------------- */
-  var CAT_NAMES = { numbers: 'Numbers', models: 'Models', concepts: 'Concepts', prep: 'Preprocessing', at2: 'AT2', rules: 'Say-it rules' };
-  var cardFilter = { cats: {}, priority: false };
-  function cardBox(id) { var s = S.cards[id]; return s ? s.box : 0; }   // 0 = new
-  function boxCounts(list) {
-    var c = [0, 0, 0, 0, 0, 0];
-    list.forEach(function (card) { c[cardBox(card.id)]++; });
-    return c;
-  }
-  pages.cards = function () {
-    sess = null;
-    if (!CARDS.length) return { title: 'Flashcards', html: '<h2>Flashcards</h2>' + emptyNote('flashcards') };
-    var anyCat = Object.keys(cardFilter.cats).some(function (k) { return cardFilter.cats[k]; });
-    var pool = filteredCards();
-    var bc = boxCounts(pool);
-    return {
-      title: 'Flashcards',
-      html: '<h2>Flashcards</h2><p class="muted">Say the answer out loud, flip, then mark it. "Knew it" moves a card up one box. "Didn\'t know" sends it to box 1 and it returns after ' + CONFIG.againAfter + ' other cards. Box 5 means mastered.</p>' +
-        '<div class="chips" role="group" aria-label="Filter by topic">' + Object.keys(CAT_NAMES).map(function (k) { return '<button class="chip" data-cat="' + k + '" aria-pressed="' + !!cardFilter.cats[k] + '">' + CAT_NAMES[k] + '</button>'; }).join('') +
-        '<button class="chip" data-prio aria-pressed="' + cardFilter.priority + '">Priority numbers</button></div>' +
-        '<p class="small">' + (anyCat || cardFilter.priority ? 'Filtered: ' : 'All topics: ') + plural(pool.length, 'card') + '.</p>' +
-        table({ head: ['New', 'Box 1', 'Box 2', 'Box 3', 'Box 4', 'Box 5'], rows: [bc.map(String)] }) +
-        '<a class="btn block-w" href="#/cards/session" ' + (pool.length ? '' : 'aria-disabled="true"') + '>Start session</a>' +
-        '<p class="small muted" style="margin-top:8px">Up to ' + CONFIG.newCardsPerSession + ' new cards per session, so you learn in small batches.</p>',
-      after: function (root) {
-        $$('[data-cat]', root).forEach(function (b) { b.onclick = function () { var k = b.getAttribute('data-cat'); cardFilter.cats[k] = !cardFilter.cats[k]; render(); }; });
-        $('[data-prio]', root).onclick = function () { cardFilter.priority = !cardFilter.priority; render(); };
-      }
-    };
-  };
-  function filteredCards(lessonId) {
-    if (lessonId) return CARDS.filter(function (c) { return c.lesson === lessonId; });
-    var cats = Object.keys(cardFilter.cats).filter(function (k) { return cardFilter.cats[k]; });
-    return CARDS.filter(function (c) {
-      if (cardFilter.priority && !c.priority) return false;
-      return !cats.length || cats.indexOf(c.cat) >= 0;
-    });
-  }
-
-  var sess = null;
-  function newSession(lessonId) {
-    sess = { key: lessonId || 'filter', lesson: lessonId, pool: filteredCards(lessonId), again: [], recent: [], newCount: 0, shown: 0, knew: 0, missed: 0, missedIds: {}, current: null, flipped: false, ended: false };
-  }
-  function drawCard() {
-    var s = sess;
-    s.again.forEach(function (a) { a.wait--; });
-    for (var i = 0; i < s.again.length; i++) if (s.again[i].wait <= 0) { var id = s.again.splice(i, 1)[0].id; return byId(CARDS, id); }
-    var waiting = s.again.map(function (a) { return a.id; });
-    var cands = s.pool.filter(function (c) { return waiting.indexOf(c.id) < 0 && s.recent.indexOf(c.id) < 0; });
-    if (!cands.length) cands = s.pool.filter(function (c) { return waiting.indexOf(c.id) < 0 && (!s.current || c.id !== s.current.id); });
-    var weighted = [], total = 0;
-    cands.forEach(function (c) {
-      var b = cardBox(c.id), w;
-      if (b === 0) { if (s.newCount >= CONFIG.newCardsPerSession) return; w = CONFIG.boxWeights[0]; }
-      else w = CONFIG.boxWeights[b - 1];
-      weighted.push([c, w]); total += w;
-    });
-    if (!weighted.length) {
-      if (s.again.length) { s.again.sort(function (a, b) { return a.wait - b.wait; }); return byId(CARDS, s.again.shift().id); }
-      return null;
-    }
-    var r = Math.random() * total;
-    for (var j = 0; j < weighted.length; j++) { r -= weighted[j][1]; if (r <= 0) break; }
-    var pick = weighted[Math.min(j, weighted.length - 1)][0];
-    if (cardBox(pick.id) === 0) s.newCount++;
-    return pick;
-  }
-  function cardFront(c) {
-    if (c.type === 'blank') return '<div class="q">' + fmt(c.text).replace(/\{\{([^}]+)\}\}/g, '<span class="blank-gap" aria-label="blank">&nbsp;</span>') + '</div>';
-    return '<div class="q">' + fmt(c.q) + '</div>';
-  }
-  function cardBack(c) {
-    if (c.type === 'blank') return '<p>' + fmt(c.text).replace(/\{\{([^}]+)\}\}/g, '<span class="hl">$1</span>') + '</p>';
-    if (c.type === 'contrast') return '<div class="contrast">' + c.pair.map(function (p) { return '<div><b>' + fmt(p.name) + '</b>' + fmt(p.text) + '</div>'; }).join('') + '</div>' + (c.a ? '<p style="margin-top:10px">' + fmt(c.a) + '</p>' : '');
-    if (c.type === 'sayit') return '<p><strong>What:</strong> ' + fmt(c.what) + '</p><p><strong>Evidence:</strong> ' + fmt(c.evidence) + '</p><p><strong>Why / trade-off:</strong> ' + fmt(c.why) + '</p>';
-    return items(c.a);
-  }
-  var TYPE_NAMES = { qa: 'Question', blank: 'Fill the blank', contrast: 'Contrast pair', sayit: 'Say it' };
-  pages.cardSession = function (q) {
-    var key = q.lesson || 'filter';
-    if (!sess || sess.key !== key) newSession(q.lesson);
-    var s = sess;
-    if (!s.pool.length) return { title: 'Flashcards', back: '#/cards', html: emptyNote('cards for this filter') };
-    if (!s.current && !s.ended) { s.current = drawCard(); s.flipped = false; if (!s.current) s.ended = true; else s.shown++; }
-    if (s.ended) {
-      var missedN = Object.keys(s.missedIds).length;
-      return {
-        title: 'Session finished', back: q.lesson ? '#/learn/' + q.lesson : '#/cards',
-        html: '<h2>Session finished</h2><div class="card"><p>You saw ' + plural(s.knew + s.missed, 'card') + '. You knew ' + s.knew + '. You missed ' + s.missed + '.</p>' +
-          (missedN ? '<p>' + plural(missedN, 'card') + ' went back to box 1. They come up first next time.</p>' : '<p>No misses this session.</p>') +
-          (s.newCount >= CONFIG.newCardsPerSession ? '<p class="small muted">You reached the limit of ' + CONFIG.newCardsPerSession + ' new cards for this session.</p>' : '') + '</div>' +
-          '<div class="row"><button class="btn" id="again">New session</button><a class="btn plain" href="#/cards">Back to Flashcards</a></div>',
-        after: function (root) { $('#again', root).onclick = function () { newSession(q.lesson); render(); }; }
-      };
-    }
-    var c = s.current, b = cardBox(c.id);
-    var lesson = byId(LEARN, c.lesson);
-    return {
-      title: 'Flashcards', back: q.lesson ? '#/learn/' + q.lesson : '#/cards',
-      html: '<p class="small muted">Card ' + s.shown + ' · knew ' + s.knew + ' · missed ' + s.missed + (s.lesson && lesson ? ' · ' + esc(lesson.title) : '') + '</p>' +
-        '<div class="flip' + (s.flipped ? ' flipped' : '') + '" id="flip"><div class="flip-inner">' +
-        '<div class="face front" aria-hidden="' + s.flipped + '"><div class="facelabel">' + esc(TYPE_NAMES[c.type] || 'Question') + ' · ' + esc(CAT_NAMES[c.cat] || '') + (c.priority ? ' · Priority' : '') + '</div>' + cardFront(c) + '</div>' +
-        '<div class="face back" aria-hidden="' + !s.flipped + '"><div class="facelabel">Answer</div>' + cardBack(c) + '</div>' +
-        '</div></div>' +
-        '<button class="btn secondary flipbtn" id="flipbtn" aria-expanded="' + s.flipped + '">' + (s.flipped ? 'Show question' : 'Flip card') + '</button>' +
-        '<div class="row" id="rate"' + (s.flipped ? '' : ' hidden') + '><button class="btn wrong" data-r="0">Didn\'t know</button><button class="btn right" data-r="1">Knew it</button></div>' +
-        '<p class="small muted" style="margin-top:12px">' + (b ? 'Box ' + b + ' of 5' : 'New card') + '</p><div class="boxes" aria-hidden="true">' + [1, 2, 3, 4, 5].map(function (n) { return '<i class="' + (n <= b ? 'on' : '') + '"></i>'; }).join('') + '</div>' +
-        (lesson ? '<p class="small" style="margin-top:12px">' + lessonLink(lesson.id) + '</p>' : '') +
-        '<button class="btn plain block-w" id="endsess" style="margin-top:8px">End session</button>',
-      after: function (root) {
-        var flip = $('#flip', root), inner = $('.flip-inner', root);
-        var faces = $$('.face', root);
-        inner.style.minHeight = Math.max(280, faces[0].scrollHeight, faces[1].scrollHeight) + 'px';
-        function doFlip() {
-          s.flipped = !s.flipped; flip.classList.toggle('flipped', s.flipped);
-          faces[0].setAttribute('aria-hidden', String(s.flipped)); faces[1].setAttribute('aria-hidden', String(!s.flipped));
-          $('#flipbtn', root).textContent = s.flipped ? 'Show question' : 'Flip card';
-          $('#flipbtn', root).setAttribute('aria-expanded', String(s.flipped));
-          $('#rate', root).hidden = false;
-        }
-        flip.onclick = doFlip; $('#flipbtn', root).onclick = doFlip;
-        $$('[data-r]', root).forEach(function (btn) {
-          btn.onclick = function () {
-            var knew = btn.getAttribute('data-r') === '1';
-            var st = S.cards[c.id] || { box: 1, seen: 0, miss: 0 };
-            st.seen++;
-            if (knew) { st.box = Math.min(5, (S.cards[c.id] ? st.box : 1) + 1); s.knew++; }
-            else { st.box = 1; st.miss++; s.missed++; s.missedIds[c.id] = 1; s.again.push({ id: c.id, wait: CONFIG.againAfter }); }
-            S.cards[c.id] = st; save();
-            s.recent.push(c.id); if (s.recent.length > 2) s.recent.shift();
-            s.current = null; render();
-          };
-        });
-        $('#endsess', root).onclick = function () { s.ended = true; render(); };
-      }
-    };
+  P.question = function (id) {
+    var i = -1; EXAM.forEach(function (q, k) { if (q.id === id) i = k; });
+    if (i < 0) return P.missing();
+    var q = EXAM[i], next = EXAM[i + 1], sh = q.show || {}, topic = byId(TOPICS, q.topic);
+    var where = cellsText(sh.cells) ? '<strong>' + cellsText(sh.cells) + '</strong>' + (sh.text ? ': ' + fmt(sh.text) : '') : (sh.text ? fmt(sh.text) : 'No cell. Answer from memory.');
+    return { title: GROUP_NAMES[q.group], back: '#/exam', html:
+      '<div class="card"><p class="q" style="margin:0">' + fmt(q.q) + '</p></div>' +
+      '<div class="card"><div class="timer" id="tm">' + mmss(ANSWER_SECONDS * 1000) + '</div><button class="btn light full" id="go">Start 40 seconds and answer out loud</button></div>' +
+      '<button class="btn full" id="show">Show the model answer</button>' +
+      '<div id="ans" hidden style="margin-top:12px">' +
+        sec('say', 'Good answer (What + Evidence)', '<p>' + fmt(q.good) + '</p>') +
+        sec('why', 'Excellent add-on (Why)', '<p>' + fmt(q.excellent) + '</p>') +
+        (q.short ? sec('rem', 'Short version', '<p>' + fmt(q.short) + '</p>') : '') +
+        sec('show', 'Point at', '<p>' + where + '</p>') +
+        (canSpeak ? '<button class="btn light full" id="listen">Listen to the answer</button>' : '') +
+        '<div class="row"><button class="btn right" data-mark="ok">Nailed it</button><button class="btn wrong" data-mark="again">Practise again</button></div>' +
+        (topic ? '<p class="small">Learn the topic: <a href="#/topic/' + topic.id + '">' + esc(topic.title) + '</a></p>' : '') +
+      '</div>',
+      after: function (m) {
+        var stop = null;
+        $('#go', m).onclick = function (e) { e.target.hidden = true; stop = countdown(ANSWER_SECONDS, $('#tm', m), function () { $('#show', m).click(); }); };
+        $('#show', m).onclick = function (e) { if (stop) stop(); e.target.hidden = true; $('#ans', m).hidden = false; };
+        var ls = $('#listen', m); if (ls) ls.onclick = function () { speak(q.good + ' ' + q.excellent); };
+        $$('[data-mark]', m).forEach(function (b) { b.onclick = function () { S.exam[q.id] = b.dataset.mark; save(); location.hash = next ? '#/q/' + next.id : '#/exam'; }; });
+      } };
   };
 
-  /* ---------------- QUIZ ---------------- */
+  /* Test yourself: 10 quick questions from the topics' "Check yourself". Misses come back first. */
   var round = null;
-  var POOLS = { all: 'All questions', at3: 'AT3 only', at2: 'AT2 only', weak: 'Retry only my misses' };
-  pages.quiz = function () {
-    round = null;
-    if (!QUIZ.length) return { title: 'Quiz', html: '<h2>Quiz</h2>' + emptyNote('quiz questions') };
-    var weak = S.quiz.weak.filter(function (id) { return byId(QUIZ, id); });
-    var last = S.quiz.rounds.slice(-5).reverse();
-    var at2 = QUIZ.filter(function (x) { return x.set === 'at2'; }).length;
-    return {
-      title: 'Quiz',
-      html: '<h2>Quiz</h2><p class="muted">Rounds of ' + CONFIG.quizRoundSize + '. Four options each. After every answer you see why.</p>' +
-        '<p class="small">' + QUIZ.length + ' questions: ' + (QUIZ.length - at2) + ' AT3, ' + at2 + ' AT2. Weak list: ' + weak.length + '.</p>' +
-        Object.keys(POOLS).map(function (k) {
-          var dis = k === 'weak' && !weak.length;
-          return '<a class="listbtn" href="#/quiz/run?pool=' + k + '"' + (dis ? ' aria-disabled="true" style="pointer-events:none;opacity:.5"' : '') + '><span class="grow">' + POOLS[k] + '</span>' + (k === 'weak' ? '<span class="meta">' + weak.length + '</span>' : '') + '</a>';
-        }).join('') +
-        (last.length ? '<h3>Last rounds</h3>' + table({ head: ['When', 'Set', 'Score'], rows: last.map(function (r) { return [new Date(r.at).toLocaleString(), POOLS[r.pool] || r.pool, r.score + ' / ' + r.n]; }) }) : '')
-    };
-  };
-  function startRound(pool) {
-    var list = QUIZ.filter(function (x) {
-      if (pool === 'at3' || pool === 'at2') return x.set === pool;
-      if (pool === 'weak') return S.quiz.weak.indexOf(x.id) >= 0;
-      return true;
-    });
-    var seen = function (x) { return S.quiz.stats[x.id]; };
-    var unseen = shuffle(list.filter(function (x) { return !seen(x); }));
-    var wrongBefore = shuffle(list.filter(function (x) { return seen(x) && seen(x).wrong > 0; }));
-    var rest = shuffle(list.filter(function (x) { return seen(x) && !seen(x).wrong; }));
-    var picked = [], ids = {};
-    unseen.concat(wrongBefore, rest).forEach(function (x) { if (picked.length < CONFIG.quizRoundSize && !ids[x.id]) { ids[x.id] = 1; picked.push(x); } });
-    picked = shuffle(picked);
-    round = { pool: pool, qs: picked.map(function (x) { return { item: x, opts: shuffle(x.options) }; }), i: 0, score: 0, answered: null, missed: 0, saved: false };
-  }
-  pages.quizRun = function (q) {
-    var pool = q.pool || 'all';
-    if (!round || round.pool !== pool) startRound(pool);
+  function allChecks() { var out = []; TOPICS.forEach(function (t) { (t.check || []).forEach(function (c, k) { out.push({ id: t.id + ':' + k, topic: t, q: c.q, a: c.a }); }); }); return out; }
+  P.test = function () {
+    if (!round) {
+      var all = allChecks();
+      var miss = shuffle(all.filter(function (x) { var s = S.test[x.id]; return s && s.miss > s.hit; }));
+      var unseen = shuffle(all.filter(function (x) { return !S.test[x.id]; }));
+      var rest = shuffle(all.filter(function (x) { return miss.indexOf(x) < 0 && unseen.indexOf(x) < 0; }));
+      round = { qs: miss.concat(unseen, rest).slice(0, TEST_ROUND), i: 0, knew: 0, shown: false };
+    }
     var r = round;
-    if (!r.qs.length) return { title: 'Quiz', back: '#/quiz', html: emptyNote('questions in this set') };
     if (r.i >= r.qs.length) {
-      if (!r.saved) { S.quiz.rounds.push({ at: Date.now(), pool: pool, score: r.score, n: r.qs.length }); save(); r.saved = true; }
-      var weakN = S.quiz.weak.length;
-      return {
-        title: 'Round finished', back: '#/quiz',
-        html: '<h2>' + r.score + ' of ' + r.qs.length + ' right</h2>' + bar(r.score / r.qs.length) +
-          '<div class="card"><p>' + (r.missed ? plural(r.missed, 'question') + ' added to your weak list.' : 'No misses this round.') + ' Your weak list now has ' + plural(weakN, 'question') + '.</p></div>' +
-          '<div class="row"><button class="btn" id="again">Another round</button>' + (weakN ? '<a class="btn secondary" href="#/quiz/run?pool=weak" id="retry">Retry only my misses</a>' : '') + '</div>',
-        after: function (root) {
-          fillBars(root);
-          $('#again', root).onclick = function () { startRound(pool); render(); };
-          var rt = $('#retry', root); if (rt) rt.onclick = function () { round = null; };
-        }
-      };
+      var missed = r.qs.length - r.knew;
+      return { title: 'Test yourself', html: '<h2>' + r.knew + ' of ' + r.qs.length + ' known</h2>' +
+        '<div class="card"><p>' + (missed ? 'You missed ' + missed + '. They come back first next time.' : 'No misses this round.') + '</p></div>' +
+        '<button class="btn full" id="again">Another 10 questions</button>',
+        after: function (m) { $('#again', m).onclick = function () { round = null; render(); }; } };
     }
-    var cur = r.qs[r.i], it = cur.item, correct = it.options[0], near = it.options[1];
-    var ans = r.answered;
-    return {
-      title: 'Quiz', back: '#/quiz',
-      html: '<p class="small muted">Question ' + (r.i + 1) + ' of ' + r.qs.length + ' · ' + r.score + ' right so far</p>' + bar(r.i / r.qs.length) +
-        '<div class="card"><p style="font-size:19px;font-weight:600;margin:0">' + fmt(it.q) + '</p></div>' +
-        cur.opts.map(function (o, k) {
-          var cls = ans == null ? '' : o === correct ? ' is-right' : o === ans ? ' is-wrong' : '';
-          return '<button class="opt' + cls + '" data-o="' + k + '"' + (ans != null ? ' aria-disabled="true"' : '') + '>' + fmt(o) + (ans != null && o === correct ? ' <span class="small">(right answer)</span>' : ans != null && o === ans ? ' <span class="small">(your answer)</span>' : '') + '</button>';
-        }).join('') +
-        (ans != null ?
-          '<div class="status ' + (ans === correct ? 'right' : 'wrong') + '" role="status">' + (ans === correct ? 'Right.' : 'Not right. The answer is: ' + fmt(correct)) + '</div>' +
-          '<div class="card"><p><strong>Why it is right:</strong> ' + fmt(it.why) + '</p>' +
-          '<p><strong>Why "' + fmt(near) + '" is wrong:</strong> ' + fmt(it.near) + '</p>' +
-          '<p class="small muted">' + fmt(it.section || '') + '</p>' + (it.lesson ? '<p class="small">' + lessonLink(it.lesson, 'Open lesson') + '</p>' : '') + '</div>' +
-          '<button class="btn block-w" id="next">' + (r.i + 1 < r.qs.length ? 'Next question' : 'See score') + '</button>' : ''),
-      after: function (root) {
-        fillBars(root);
-        if (ans == null) $$('[data-o]', root).forEach(function (b) {
-          b.onclick = function () {
-            var chosen = cur.opts[+b.getAttribute('data-o')];
-            r.answered = chosen;
-            var st = S.quiz.stats[it.id] || { right: 0, wrong: 0 };
-            var wi = S.quiz.weak.indexOf(it.id);
-            if (chosen === correct) { r.score++; st.right++; if (wi >= 0) S.quiz.weak.splice(wi, 1); }
-            else { st.wrong++; r.missed++; if (wi < 0) S.quiz.weak.push(it.id); }
-            S.quiz.stats[it.id] = st; save(); render();
-          };
-        });
-        var nx = $('#next', root); if (nx) nx.onclick = function () { r.i++; r.answered = null; render(); };
-      }
-    };
+    var x = r.qs[r.i];
+    return { title: 'Test yourself', html:
+      '<p class="small muted">Question ' + (r.i + 1) + ' of ' + r.qs.length + ' · ' + esc(x.topic.title) + '</p>' + bar(r.i / r.qs.length) +
+      '<div class="card"><p class="q" style="margin:0">' + fmt(x.q) + '</p></div>' +
+      (r.shown ? '<div class="card"><p style="margin:0">' + fmt(x.a) + '</p></div><div class="row"><button class="btn wrong" data-k="0">Didn\'t know</button><button class="btn right" data-k="1">Knew it</button></div><p class="small"><a href="#/topic/' + x.topic.id + '">Open the topic</a></p>'
+        : '<button class="btn full" id="flip">Say it out loud, then show the answer</button>'),
+      after: function (m) {
+        var f = $('#flip', m); if (f) f.onclick = function () { r.shown = true; render(); };
+        $$('[data-k]', m).forEach(function (b) { b.onclick = function () {
+          var s = S.test[x.id] || { hit: 0, miss: 0 }; if (b.dataset.k === '1') { s.hit++; r.knew++; } else s.miss++;
+          S.test[x.id] = s; save(); r.i++; r.shown = false; render(); }; });
+      } };
   };
 
-  /* ---------------- ANSWER PRACTICE ---------------- */
-  var GROUPS = { official: 'Official questions', followup: 'Follow-up questions', at2: 'AT2 questions' };
-  var practiceGroup = 'all', pq = null;
-  function ratingOf(id) { var p = S.practice[id]; return p ? p.rating : null; }
-  function orderedPractice(group) {
-    var rank = { missed: 0, good: 1, excellent: 2 };
-    var list = PRACTICE.filter(function (x) { return group === 'all' || x.group === group; });
-    return list.map(function (x, i) { return [x, i]; }).sort(function (a, b) {
-      var ra = ratingOf(a[0].id), rb = ratingOf(b[0].id);
-      var ka = ra == null ? 3 : rank[ra], kb = rb == null ? 3 : rank[rb];
-      return ka - kb || a[1] - b[1];
-    }).map(function (x) { return x[0]; });
-  }
-  function practiceLabel(x) { return (x.group === 'official' ? 'Q' + x.n : x.group === 'at2' ? 'AT2 ' + x.n : x.n + '.') + ' ' + x.q; }
-  pages.practice = function () {
-    pq = null;
-    if (!PRACTICE.length) return { title: 'Answer practice', html: '<h2>Answer practice</h2>' + emptyNote('practice questions') };
-    var list = orderedPractice(practiceGroup);
-    var counts = { excellent: 0, good: 0, missed: 0 };
-    PRACTICE.forEach(function (x) { var r = ratingOf(x.id); if (r) counts[r]++; });
-    return {
-      title: 'Answer practice',
-      html: '<h2>Answer practice</h2><p class="muted">The most important mode. Read the question, start ' + CONFIG.answerSeconds + ' seconds, and answer out loud. Then reveal the model answer in 3 taps and rate yourself.</p>' +
-        '<p class="small">' + PRACTICE.length + ' questions. Excellent ' + counts.excellent + ' · Good ' + counts.good + ' · Missed ' + counts.missed + ' · Not tried ' + (PRACTICE.length - counts.excellent - counts.good - counts.missed) + '</p>' +
-        '<div class="chips" role="group" aria-label="Question group">' + [['all', 'All']].concat(Object.keys(GROUPS).map(function (k) { return [k, GROUPS[k]]; })).map(function (g) { return '<button class="chip" data-g="' + g[0] + '" aria-pressed="' + (practiceGroup === g[0]) + '">' + g[1] + '</button>'; }).join('') + '</div>' +
-        '<a class="btn block-w" href="#/practice/q/' + esc(list[0].id) + '?run=1">Start: Missed first, then Good, Excellent, not tried</a>' +
-        '<h3>All questions in this order</h3>' +
-        list.map(function (x) { var r = ratingOf(x.id); return '<a class="listbtn" href="#/practice/q/' + esc(x.id) + '"><span class="grow">' + fmt(practiceLabel(x)) + '</span>' + (r ? '<span class="tag ' + r + '">' + ratingName(r) + '</span>' : '') + '</a>'; }).join(''),
-      after: function (root) { $$('[data-g]', root).forEach(function (b) { b.onclick = function () { practiceGroup = b.getAttribute('data-g'); render(); }; }); }
-    };
-  };
-  function ratingName(r) { return { excellent: 'Excellent', good: 'Good', missed: 'Missed' }[r] || ''; }
-  function showText(x) {
-    var sh = x.show || {};
-    if ((sh.cells || []).length) return '<strong>' + esc(cellText(sh.cells)) + '</strong>' + (sh.text ? '. ' + fmt(sh.text) : '');
-    return sh.text ? fmt(sh.text) : 'No cell. Answer from memory.';
-  }
-  // three-tap reveal + listen + self-check + rating. used by practice and mock review
-  function revealHtml(x) {
-    var long = x.short && words(x.good + ' ' + x.excellent) > CONFIG.longAnswerWords;
-    return '<div data-steps>' +
-      '<button class="btn secondary block-w" data-step="1">1. Show Good answer</button>' +
-      '<div data-part="1" hidden>' + block('say', 'Good answer', '<p>' + fmt(x.good) + '</p>') + '<button class="btn secondary block-w" data-step="2">2. Show Excellent add-on</button></div>' +
-      '<div data-part="2" hidden>' + block('say', 'Excellent add-on', '<p>' + fmt(x.excellent) + '</p>') +
-        (long ? block('remember', 'Short version', '<p>' + fmt(x.short) + '</p>') : '') + '<button class="btn secondary block-w" data-step="3">3. Show in notebook</button></div>' +
-      '<div data-part="3" hidden>' + block('point', 'Show in notebook', '<p>' + showText(x) + '</p>') +
-        (canSpeak ? '<button class="btn plain block-w" data-listen>Listen to the full answer</button>' : '') +
-        '<h3>Self-check</h3>' +
-        ['I said What', 'I said a number', 'I said Why or trade-off'].map(function (t, i) { return '<button class="check" data-c="' + i + '" aria-pressed="false"><span class="box" aria-hidden="true"></span><span>' + t + '</span></button>'; }).join('') +
-        '<p class="small muted" data-hint>Tick what you actually said.</p>' +
-        '<h3>Rate this answer</h3><div class="row"><button class="btn wrong" data-rating="missed">Missed</button><button class="btn" data-rating="good">Good</button><button class="btn right" data-rating="excellent">Excellent</button></div>' +
-        (x.lesson ? '<p class="small">' + lessonLink(x.lesson) + '</p>' : '') +
-      '</div></div>';
-  }
-  function mountReveal(root, x, onRate) {
-    $$('[data-step]', root).forEach(function (b) {
-      b.onclick = function () { var n = b.getAttribute('data-step'); $('[data-part="' + n + '"]', root).hidden = false; b.hidden = true; };
-    });
-    var ls = $('[data-listen]', root); if (ls) ls.onclick = function () { speak(x.good + ' ' + x.excellent); };
-    var ticks = [false, false, false];
-    $$('[data-c]', root).forEach(function (b) {
-      b.onclick = function () {
-        var i = +b.getAttribute('data-c'); ticks[i] = !ticks[i]; b.setAttribute('aria-pressed', String(ticks[i]));
-        var n = ticks.filter(Boolean).length;
-        $('[data-hint]', root).textContent = ticks[0] && ticks[1] && ticks[2] ? 'All 3 layers: that is the Excellent pattern.' : ticks[0] && ticks[1] ? 'What and a number: that is the Good pattern. Add the why for Excellent.' : n ? 'Missing ' + ['What', 'a number', 'Why or trade-off'].filter(function (_, k) { return !ticks[k]; }).join(' and ') + '.' : 'Tick what you actually said.';
-      };
-    });
-    $$('[data-rating]', root).forEach(function (b) { b.onclick = function () { onRate(b.getAttribute('data-rating')); }; });
-  }
-  pages.practiceOne = function (id, q) {
-    var x = byId(PRACTICE, id);
-    if (!x) return pages.notFound();
-    var run = q.run === '1';
-    if (run && (!pq || pq.group !== practiceGroup)) pq = { group: practiceGroup, order: orderedPractice(practiceGroup).map(function (y) { return y.id; }), done: {} };
-    var nextId = null;
-    if (run && pq) { for (var i = 0; i < pq.order.length; i++) if (!pq.done[pq.order[i]] && pq.order[i] !== id) { nextId = pq.order[i]; break; } }
-    var r = ratingOf(x.id);
-    return {
-      title: GROUPS[x.group] || 'Practice', back: '#/practice',
-      html: '<div class="kicker">' + esc(GROUPS[x.group] || '') + (r ? ' · last: ' + ratingName(r) : '') + '</div>' +
-        '<div class="card"><p style="font-size:21px;font-weight:600;line-height:1.35;margin:0">' + fmt(x.q) + '</p></div>' +
-        '<div class="card">' + timerHtml('ptimer') + '<div class="row"><button class="btn" id="pstart">Start ' + CONFIG.answerSeconds + ' seconds</button><button class="btn plain" id="pstop" hidden>Stop</button></div>' +
-        '<p class="small muted" style="text-align:center;margin:0">Use the 3 layers: What, a number, Why.</p></div>' +
-        '<div id="reveal" hidden>' + revealHtml(x) + '</div>' +
-        '<div id="pstatus" role="status"></div>' +
-        '<button class="btn plain block-w" id="skip">Skip to model answer</button>',
-      after: function (root) {
-        var el = $('#ptimer', root), t = null;
-        function done() { if (t) t.stop(); $('#pstart', root).hidden = true; $('#pstop', root).hidden = true; $('#skip', root).hidden = true; $('#reveal', root).hidden = false; }
-        $('#pstart', root).onclick = function () {
-          $('#pstart', root).hidden = true; $('#pstop', root).hidden = false;
-          t = countdown(CONFIG.answerSeconds, function (left) { el.textContent = mmss(left); el.classList.toggle('low', left < 10000); }, done);
-        };
-        $('#pstop', root).onclick = done;
-        $('#skip', root).onclick = done;
-        mountReveal(root, x, function (rating) {
-          S.practice[x.id] = { rating: rating, at: Date.now() }; save();
-          stopSpeaking();
-          if (run && pq) pq.done[x.id] = 1;
-          if (run && nextId) location.hash = '#/practice/q/' + nextId + '?run=1';
-          else { $('#pstatus', root).innerHTML = '<div class="status">Saved as ' + ratingName(rating) + '.' + (run ? ' You have been through every question in this set.' : '') + ' <a href="#/practice">Back to the list</a></div>'; }
-        });
-      }
-    };
+  var hideScript = false;
+  P.story = function () {
+    var script = STORY ? STORY.blocks.map(function (b) { return '<p>' + fmt(b.text) + '</p>'; }).join('') + '<p><strong>' + fmt(STORY.closing) + '</strong></p>' : '';
+    return { title: 'My 90-second opening', back: '#/', html: '<h2>My 90-second opening</h2><p class="muted">Say this first in the exam, scrolling the notebook as you speak.</p>' +
+      (hideScript ? '<div class="card muted">Script hidden. Say it from memory, then show it to check.</div>' : '<div class="card">' + script + '</div>') +
+      '<div class="row"><button class="btn light" id="hide">' + (hideScript ? 'Show the script' : 'Hide the script') + '</button>' + (canSpeak ? '<button class="btn light" id="listen">Listen</button>' : '') + '</div>' +
+      '<div class="card"><div class="timer" id="tm">' + mmss(STORY_SECONDS * 1000) + '</div><button class="btn full" id="go">Start 90 seconds</button></div>' +
+      (STORY && STORY.note ? '<p class="small muted">' + fmt(STORY.note) + '</p>' : ''),
+      after: function (m) {
+        $('#hide', m).onclick = function () { hideScript = !hideScript; render(); };
+        var ls = $('#listen', m); if (ls) ls.onclick = function () { speak(STORY.blocks.map(function (b) { return b.text; }).join(' ') + ' ' + STORY.closing); };
+        $('#go', m).onclick = function (e) { e.target.hidden = true; countdown(STORY_SECONDS, $('#tm', m), function () { $('#tm', m).textContent = 'Time'; }); };
+      } };
   };
 
-  /* ---------------- CODE WALKTHROUGH ---------------- */
-  var KW = /^(def|return|if|elif|else|for|in|not|and|or|import|from|as|lambda|True|False|None|with|while|is|continue|break|print)$/;
-  function colourPy(line) {
-    var out = '', re = /(#.*$)|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")|(\b\d+(?:\.\d+)?(?:e-?\d+)?\b)|([A-Za-z_][A-Za-z0-9_]*)(?=\s*\()|([A-Za-z_][A-Za-z0-9_]*)/g, last = 0, m;
-    while ((m = re.exec(line))) {
-      out += esc(line.slice(last, m.index));
-      if (m[1]) out += '<span class="tk-com">' + esc(m[1]) + '</span>';
-      else if (m[2]) out += '<span class="tk-str">' + esc(m[2]) + '</span>';
-      else if (m[3]) out += '<span class="tk-num">' + esc(m[3]) + '</span>';
-      else if (m[4]) out += KW.test(m[4]) ? '<span class="tk-kw">' + esc(m[4]) + '</span>' : '<span class="tk-fn">' + esc(m[4]) + '</span>';
-      else if (m[5]) out += KW.test(m[5]) ? '<span class="tk-kw">' + esc(m[5]) + '</span>' : esc(m[5]);
-      last = re.lastIndex;
-    }
-    return out + esc(line.slice(last));
-  }
-  var lineMode = false;
-  pages.codeIndex = function () {
-    if (!CODE.length) return { title: 'Code walkthrough', html: '<h2>Code walkthrough</h2>' + emptyNote('code steps') };
-    return {
-      title: 'Code walkthrough',
-      html: '<h2>Code walkthrough</h2><p class="muted">Step through the notebook in the order you will show it. Cell numbers count from 0 at the top of the notebook.</p>' +
-        '<a class="btn block-w" href="#/code/1">Start at step 1</a><h3>All steps</h3>' +
-        CODE.map(function (st, i) { return '<a class="listbtn" href="#/code/' + (i + 1) + '"><span class="tag">' + (i + 1) + '</span><span class="grow">' + esc(st.title) + '</span><span class="meta">' + esc(cellText(st.cells)) + '</span></a>'; }).join('')
-    };
-  };
-  pages.codeStep = function (n) {
-    var i = (+n || 1) - 1, st = CODE[i];
-    if (!st) return pages.notFound();
-    var code = '<pre class="code" aria-label="Notebook code">' + st.lines.map(function (ln, k) {
-      var html = colourPy(ln.c) || ' ';
-      if (lineMode && ln.n) return '<button class="ln" data-ln="' + k + '" aria-expanded="false">' + html + '</button><span class="note" data-note="' + k + '" hidden>' + fmt(ln.n) + '</span>';
-      return '<span class="ln">' + html + '</span>';
-    }).join('') + '</pre>';
-    return {
-      title: 'Step ' + (i + 1) + ' of ' + CODE.length, back: '#/code',
-      html: '<div class="kicker">Step ' + (i + 1) + ' of ' + CODE.length + ' · ' + esc(cellText(st.cells)) + '</div><h2>' + esc(st.title) + '</h2>' +
-        (st.section ? '<p class="small muted">Notebook section: ' + fmt(st.section) + '</p>' : '') +
-        '<div class="row" style="margin:4px 0"><button class="chip" id="lbl" aria-pressed="' + lineMode + '">Line by line</button></div>' +
-        (lineMode ? '<p class="small muted">Tap a line to see what it does.</p>' : '') + code +
-        block('plain', 'In plain words', items(st.plain)) +
-        block('say', 'What to say', '<p class="small muted" id="sayhint">Say it out loud first, pointing at the screen.</p><button class="btn secondary block-w" id="saybtn">I said it, show me</button><div id="saytext" hidden>' + items(st.say) + '</div>') +
-        block('point', 'Point at this output', items(st.output)) +
-        (st.lesson ? '<p class="small">' + lessonLink(st.lesson) + '</p>' : '') +
-        '<div class="row">' + (i > 0 ? '<a class="btn plain" href="#/code/' + i + '">&lsaquo; Back</a>' : '') + (i + 1 < CODE.length ? '<a class="btn" href="#/code/' + (i + 2) + '">Next &rsaquo;</a>' : '<a class="btn" href="#/code">All steps</a>') + '</div>',
-      after: function (root) {
-        $('#lbl', root).onclick = function () { lineMode = !lineMode; render(); };
-        $('#saybtn', root).onclick = function (e) { $('#saytext', root).hidden = false; $('#sayhint', root).hidden = true; e.currentTarget.hidden = true; };
-        $$('[data-ln]', root).forEach(function (b) {
-          b.onclick = function () { var k = b.getAttribute('data-ln'), note = $('[data-note="' + k + '"]', root); note.hidden = !note.hidden; b.setAttribute('aria-expanded', String(!note.hidden)); };
-        });
-      }
-    };
+  P.numbers = function () {
+    return { title: 'Numbers to know', back: '#/', html: '<h2>Numbers to know</h2><p class="muted">In the order of your story. Say them to 3 decimals.</p><div class="card"><table>' +
+      NUMBERS.map(function (n) { return '<tr><td>' + esc(n[0]) + '</td><td>' + fmt(n[1]) + '</td></tr>'; }).join('') + '</table></div>' };
   };
 
-  /* ---------------- PROGRESS + MOCK ---------------- */
-  function estimate(ratings) {
-    var m = CONFIG.marksPerRating, vals = ratings.filter(Boolean).map(function (r) { return m[r]; });
-    if (!vals.length) return null;
-    return Math.round(vals.reduce(function (a, b) { return a + b; }, 0) / vals.length);
-  }
-  function weakest() {
-    var list = [];
-    PRACTICE.forEach(function (x) { if (ratingOf(x.id) === 'missed') list.push({ score: 6, label: 'Practice missed: ' + x.q, href: '#/practice/q/' + x.id, lesson: x.lesson }); });
-    LEARN.forEach(function (l) { if (S.lessons[l.id] === 'review') list.push({ score: 4, label: 'Lesson marked Review again: ' + l.title, href: '#/learn/' + l.id, lesson: null }); });
-    CARDS.forEach(function (c) { var s = S.cards[c.id]; if (s && s.miss && s.box <= 2) list.push({ score: 2 + s.miss, label: 'Flashcard missed ' + plural(s.miss, 'time') + ': ' + (c.q || c.text || '').replace(/\{\{([^}]+)\}\}/g, '___'), href: c.lesson ? '#/learn/' + c.lesson : '#/cards', lesson: c.lesson }); });
-    QUIZ.forEach(function (x) { var s = S.quiz.stats[x.id]; if (s && S.quiz.weak.indexOf(x.id) >= 0) list.push({ score: 2 + s.wrong, label: 'Quiz missed: ' + x.q, href: x.lesson ? '#/learn/' + x.lesson : '#/quiz', lesson: x.lesson }); });
-    PRACTICE.forEach(function (x) { if (ratingOf(x.id) === 'good') list.push({ score: 1, label: 'Practice only Good: ' + x.q, href: '#/practice/q/' + x.id, lesson: x.lesson }); });
-    return list.sort(function (a, b) { return b.score - a.score; }).slice(0, 10);
-  }
-  pages.progress = function () {
-    var got = LEARN.filter(function (l) { return S.lessons[l.id] === 'got'; }).length;
-    var bc = boxCounts(CARDS);
-    var counts = { excellent: 0, good: 0, missed: 0 };
-    PRACTICE.forEach(function (x) { var r = ratingOf(x.id); if (r) counts[r]++; });
-    var est = estimate(PRACTICE.map(function (x) { return ratingOf(x.id); }));
-    var rounds = S.quiz.rounds.slice(-5).reverse();
-    var w = weakest();
-    return {
-      title: 'Progress',
-      html: '<h2>Progress</h2>' +
-        '<h3>Lessons</h3><p>' + got + ' of ' + LEARN.length + ' marked "Got it".</p>' + bar(LEARN.length ? got / LEARN.length : 0) +
-        '<h3>Flashcards per box</h3>' + table({ head: ['New', 'Box 1', 'Box 2', 'Box 3', 'Box 4', 'Box 5'], rows: [bc.map(String)] }) +
-        '<h3>Last quiz scores</h3>' + (rounds.length ? table({ head: ['When', 'Set', 'Score'], rows: rounds.map(function (r) { return [new Date(r.at).toLocaleString(), POOLS[r.pool] || r.pool, r.score + ' / ' + r.n]; }) }) : '<p class="muted">No rounds yet.</p>') +
-        '<h3>Answer practice ratings</h3><p>Excellent ' + counts.excellent + ' · Good ' + counts.good + ' · Missed ' + counts.missed + ' · Not tried ' + (PRACTICE.length - counts.excellent - counts.good - counts.missed) + '</p>' +
-        (est != null ? '<div class="card"><p style="margin:0"><strong>Self-rated estimate: ' + est + ' / 40</strong></p><p class="small muted" style="margin:0">An estimate from your own ratings (Excellent ' + CONFIG.marksPerRating.excellent + ', Good ' + CONFIG.marksPerRating.good + ', Missed ' + CONFIG.marksPerRating.missed + '), averaged over rated questions. It is not a real mark.</p></div>' : '') +
-        '<h3>Story</h3><p>' + (S.story.runs ? 'Practised from memory ' + plural(S.story.runs, 'time') + '. Last rating: ' + esc(storyRatingName(S.story.ratings[S.story.ratings.length - 1].r)) + '.' : 'Not practised from memory yet.') + '</p>' +
-        '<h3>10 weakest items</h3>' + (w.length ? w.map(function (x) { return '<a class="listbtn" href="' + x.href + '"><span class="grow small">' + fmt(x.label) + '</span></a>' + (x.lesson && x.href.indexOf('#/learn/') !== 0 ? '<p class="small" style="margin:-4px 0 10px 4px">' + lessonLink(x.lesson) + '</p>' : ''); }).join('') : '<p class="muted">Nothing weak yet. Items appear here when you miss them.</p>') +
-        '<h3>Mock defence</h3><p class="small muted">' + CONFIG.mockSize + ' random questions in a row, ' + CONFIG.answerSeconds + ' seconds each, no answers shown until the end.</p><a class="btn block-w" href="#/mock">Start Mock defence</a>' +
-        (S.mocks.length ? '<p class="small muted" style="margin-top:8px">Last mock self-rated estimate: ' + S.mocks[S.mocks.length - 1].est + ' / 40 (estimate, not a real mark).</p>' : ''),
-      after: fillBars
-    };
-  };
+  P.missing = function () { return { title: 'Not found', back: '#/', html: '<p>That page does not exist. <a href="#/">Go home</a>.</p>' }; };
 
-  var mock = null;
-  pages.mock = function () {
-    if (!PRACTICE.length) return { title: 'Mock defence', back: '#/progress', html: emptyNote('practice questions') };
-    if (!mock) {
-      return {
-        title: 'Mock defence', back: '#/progress',
-        html: '<h2>Mock defence</h2><p>' + CONFIG.mockSize + ' random questions. For each one, start the ' + CONFIG.answerSeconds + '-second timer and answer out loud. No answers are shown until all ' + CONFIG.mockSize + ' are done. Then you review each one and rate yourself.</p>' +
-          '<button class="btn block-w" id="mstart">Start</button>',
-        after: function (root) { $('#mstart', root).onclick = function () { mock = { qs: shuffle(PRACTICE).slice(0, CONFIG.mockSize).map(function (x) { return x.id; }), i: 0, phase: 'ask', ratings: {} }; render(); }; }
-      };
-    }
-    var m = mock;
-    if (m.phase === 'ask') {
-      var x = byId(PRACTICE, m.qs[m.i]);
-      return {
-        title: 'Mock ' + (m.i + 1) + ' of ' + m.qs.length,
-        html: bar(m.i / m.qs.length) + '<div class="kicker">Question ' + (m.i + 1) + ' of ' + m.qs.length + '</div>' +
-          '<div class="card"><p style="font-size:21px;font-weight:600;line-height:1.35;margin:0">' + fmt(x.q) + '</p></div>' +
-          '<div class="card">' + timerHtml('mtimer') + '<div class="row"><button class="btn" id="mgo">Start ' + CONFIG.answerSeconds + ' seconds</button><button class="btn plain" id="mstop" hidden>Stop</button></div></div>' +
-          '<button class="btn block-w" id="mnext" hidden>' + (m.i + 1 < m.qs.length ? 'Next question' : 'Go to review') + '</button>' +
-          '<button class="btn plain block-w" id="mquit" style="margin-top:8px">Stop the mock</button>',
-        after: function (root) {
-          fillBars(root);
-          var el = $('#mtimer', root), t = null;
-          function done() { if (t) t.stop(); $('#mgo', root).hidden = true; $('#mstop', root).hidden = true; $('#mnext', root).hidden = false; $('#mnext', root).focus(); }
-          $('#mgo', root).onclick = function () { $('#mgo', root).hidden = true; $('#mstop', root).hidden = false; t = countdown(CONFIG.answerSeconds, function (left) { el.textContent = mmss(left); el.classList.toggle('low', left < 10000); }, done); };
-          $('#mstop', root).onclick = done;
-          $('#mnext', root).onclick = function () { m.i++; if (m.i >= m.qs.length) { m.phase = 'review'; m.i = 0; } render(); };
-          $('#mquit', root).onclick = function () { if (confirm('Stop this mock? Nothing from it will be saved.')) { mock = null; render(); } };
-        }
-      };
-    }
-    if (m.phase === 'review') {
-      var y = byId(PRACTICE, m.qs[m.i]);
-      return {
-        title: 'Review ' + (m.i + 1) + ' of ' + m.qs.length,
-        html: '<div class="kicker">Review ' + (m.i + 1) + ' of ' + m.qs.length + '</div><div class="card"><p style="font-size:20px;font-weight:600;margin:0">' + fmt(y.q) + '</p></div>' + revealHtml(y),
-        after: function (root) {
-          mountReveal(root, y, function (rating) {
-            m.ratings[y.id] = rating; S.practice[y.id] = { rating: rating, at: Date.now() }; save(); stopSpeaking();
-            m.i++; if (m.i >= m.qs.length) { m.phase = 'done'; var e = estimate(m.qs.map(function (id) { return m.ratings[id]; })); S.mocks.push({ at: Date.now(), est: e, ratings: m.ratings }); save(); }
-            render();
-          });
-        }
-      };
-    }
-    var c = { excellent: 0, good: 0, missed: 0 };
-    m.qs.forEach(function (id) { c[m.ratings[id]]++; });
-    var est = estimate(m.qs.map(function (id) { return m.ratings[id]; }));
-    return {
-      title: 'Mock finished', back: '#/progress',
-      html: '<h2>Mock finished</h2><div class="card"><p>Excellent ' + c.excellent + ' · Good ' + c.good + ' · Missed ' + c.missed + '</p><p><strong>Self-rated estimate: ' + est + ' / 40</strong></p><p class="small muted" style="margin:0">This is an estimate from your own ratings. It is not a real mark.</p></div>' +
-        (c.missed ? '<h3>Missed</h3>' + m.qs.filter(function (id) { return m.ratings[id] === 'missed'; }).map(function (id) { var z = byId(PRACTICE, id); return '<a class="listbtn" href="#/practice/q/' + esc(id) + '"><span class="grow">' + fmt(z.q) + '</span></a>'; }).join('') : '') +
-        '<div class="row"><button class="btn" id="mnew">New mock</button><a class="btn plain" href="#/progress">Progress</a></div>',
-      after: function (root) { $('#mnew', root).onclick = function () { mock = null; render(); }; }
-    };
-  };
-
-  pages.notFound = function () { return { title: 'Not found', back: '#/', html: '<p>That page does not exist. <a href="#/">Go home</a>.</p>' }; };
-
-  /* =========================================================
-     ROUTER
-     ========================================================= */
-  var NAV = [['#/', 'Home', 'home'], ['#/learn', 'Learn', 'learn'], ['#/story', 'Story', 'story', true], ['#/cards', 'Cards', 'cards'], ['#/quiz', 'Quiz', 'quiz'], ['#/practice', 'Practice', 'practice'], ['#/code', 'Code', 'code', true], ['#/progress', 'Progress', 'progress', true]];
-  $('#nav').innerHTML = '<span class="brand">AT3 Defence Study</span>' + NAV.map(function (n) { return '<a href="' + n[0] + '" data-tab="' + n[2] + '"' + (n[3] ? ' class="side-only"' : '') + '>' + n[1] + '</a>'; }).join('');
-
-  function parse() {
-    var h = location.hash.replace(/^#\/?/, '');
-    var qi = h.indexOf('?'), path = qi >= 0 ? h.slice(0, qi) : h, qs = qi >= 0 ? h.slice(qi + 1) : '';
-    var q = {}; qs.split('&').filter(Boolean).forEach(function (kv) { var p = kv.split('='); q[decodeURIComponent(p[0])] = decodeURIComponent(p[1] || ''); });
-    return { parts: path.split('/').filter(Boolean), q: q, key: h };
-  }
-  function route(r) {
-    var a = r.parts[0], b = r.parts[1], c = r.parts[2];
-    if (!a) return [pages.home(), 'home'];
-    if (a === 'learn') return [b ? pages.lesson(b) : pages.learn(), 'learn'];
-    if (a === 'glossary') return [pages.glossary(), 'learn'];
-    if (a === 'story') return [pages.story(), 'story'];
-    if (a === 'cards') return [b === 'session' ? pages.cardSession(r.q) : pages.cards(), 'cards'];
-    if (a === 'quiz') return [b === 'run' ? pages.quizRun(r.q) : pages.quiz(), 'quiz'];
-    if (a === 'practice') return [b === 'q' && c ? pages.practiceOne(c, r.q) : pages.practice(), 'practice'];
-    if (a === 'code') return [b ? pages.codeStep(b) : pages.codeIndex(), 'code'];
-    if (a === 'progress') return [pages.progress(), 'progress'];
-    if (a === 'mock') return [pages.mock(), 'progress'];
-    return [pages.notFound(), ''];
-  }
-  var lastKey = null;
+  /* ---------- router ---------- */
+  var last = null;
   function render() {
-    cleanups.forEach(function (f) { try { f(); } catch (e) { /* ignore */ } }); cleanups = [];
-    var r = parse();
-    if (r.key !== lastKey) {
-      stopSpeaking();
-      // leaving a mode resets its in-memory session
-      if (r.parts[0] !== 'cards') sess = null;
-      if (r.parts[0] !== 'quiz') round = null;
-      if (r.parts[0] !== 'mock') mock = null;
-      if (r.parts[0] !== 'practice') pq = null;
-    }
-    var res = route(r), page = res[0], tab = res[1];
-    document.title = (page.title ? page.title + ' · ' : '') + 'AT3 Defence Study';
-    $('#title').textContent = page.title || '';
-    var back = $('#back');
-    back.hidden = !page.back;
-    back.onclick = page.back ? function () { location.hash = page.back; } : null;
-    var main = $('#main');
-    main.innerHTML = page.html;
-    $$('#nav a').forEach(function (n) { if (n.getAttribute('data-tab') === tab) n.setAttribute('aria-current', 'page'); else n.removeAttribute('aria-current'); });
-    if (r.key !== lastKey) { window.scrollTo(0, 0); main.focus({ preventScroll: true }); }
-    lastKey = r.key;
-    if (page.after) page.after(main);
+    stops.forEach(function (f) { f(); }); stops = [];
+    if (canSpeak) try { speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+    var h = location.hash.replace(/^#\/?/, ''), parts = h.split('/'), a = parts[0], b = parts[1], tab = 'home', page;
+    if (a !== 'test') round = null;   // leaving Test yourself starts a new round next time
+    if (!a) page = P.home();
+    else if (a === 'topics') { page = P.topics(); tab = 'topics'; }
+    else if (a === 'topic') { page = P.topic(b); tab = 'topics'; }
+    else if (a === 'exam') { page = P.exam(); tab = 'exam'; }
+    else if (a === 'q') { page = P.question(b); tab = 'exam'; }
+    else if (a === 'test') { page = P.test(); tab = 'test'; }
+    else if (a === 'story') page = P.story();
+    else if (a === 'numbers') page = P.numbers();
+    else page = P.missing();
+    document.title = page.title + ' · AT3 Study';
+    $('#title').textContent = page.title;
+    var back = $('#back'); back.hidden = !page.back; back.onclick = page.back ? function () { location.hash = page.back; } : null;
+    var m = $('#main'); m.innerHTML = page.html;
+    $$('#nav a').forEach(function (n) { if (n.dataset.tab === tab) n.setAttribute('aria-current', 'page'); else n.removeAttribute('aria-current'); });
+    if (h !== last) { window.scrollTo(0, 0); m.focus({ preventScroll: true }); }
+    last = h;
+    if (page.after) page.after(m);
   }
   window.addEventListener('hashchange', render);
   render();
-
-  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
-    navigator.serviceWorker.register('sw.js').catch(function () { /* offline support is optional */ });
-  }
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(function () {});
 })();
 </script>
 </body>
