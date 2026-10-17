@@ -361,7 +361,7 @@ input[type=search] { width: 100%; min-height: 48px; padding: 10px 14px; border: 
     var h = location.hash.replace(/^#\/?/, ''), parts = h.split('/'), a = parts[0], b = parts[1], tab = 'home', page;
     if (a !== 'test') round = null;   // leaving Test yourself starts a new round next time
     if (!a) page = P.home();
-    else if (a === 'topics') { page = P.topics(); tab = 'topics'; }
+    else if (a === 'topics' || a === 'learn') { page = P.topics(); tab = 'topics'; }
     else if (a === 'topic') { page = P.topic(b); tab = 'topics'; }
     else if (a === 'basic') { page = P.basic(b); tab = 'topics'; }
     else if (a === 'defs') { page = P.defs(); tab = 'defs'; }
@@ -370,7 +370,7 @@ input[type=search] { width: 100%; min-height: 48px; padding: 10px 14px; border: 
     else if (a === 'test') { page = P.test(); tab = 'test'; }
     else if (a === 'story') page = P.story();
     else if (a === 'numbers') page = P.numbers();
-    else page = P.missing();
+    else page = P.home();   // unknown or old addresses open Home
     document.title = page.title + ' · AT3 Study';
     $('#title').textContent = page.title;
     var back = $('#back'); back.hidden = !page.back; back.onclick = page.back ? function () { location.hash = page.back; } : null;
