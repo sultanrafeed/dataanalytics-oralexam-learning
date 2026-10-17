@@ -1,10 +1,11 @@
 /* sw.js: offline support.
    Cache-first: every file is saved on first visit, then served from the cache, even offline.
    After you edit any file, change VERSION below (for example v1 to v2) so phones fetch the new files. */
-var VERSION = 'at3-study-v3';
+var VERSION = 'at3-study-v4';
 var FILES = [
   './',
   'index.html',
+  'content-basics.js',
   'content-topics.js',
   'content-practice.js',
   'content-code.js',

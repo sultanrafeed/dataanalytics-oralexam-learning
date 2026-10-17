@@ -6,6 +6,9 @@ Live at: https://sultanrafeed.github.io/dataanalytics-oralexam-learning/ (open i
 
 ## How it works
 
+**Step 1: The basics** (28 tiny lessons, from zero). Each lesson only uses ideas from the lessons before it, and one made-up example of 10 people runs through them: data and tables → models and probabilities → the cut-off → TP/TN/FP/FN → accuracy, recall, precision → AUC and the ROC curve → leakage, scaling, encoding → how trees, k-NN, logistic regression and ensembles think → tuning, cross-validation, and luck vs real differences. Each has: the idea, an example, new words, where it shows up in my project, and 2 check questions.
+
+**Step 2: My project**: 
 **Topics** (33, in the order of the project). Every topic answers the same questions:
 
 1. **What is it?** Plain words and an everyday example (from the course knowledge base)
@@ -30,6 +33,7 @@ Live at: https://sultanrafeed.github.io/dataanalytics-oralexam-learning/ (open i
 | File | What it holds |
 |---|---|
 | `index.html` | The whole app (logic and styles). No study content. |
+| `content-basics.js` | Step 1: the 28 basics lessons, the 10-person example, and which basics each project topic needs. |
 | `content-topics.js` | The 33 topics, their definitions (`terms`), steps, strengths and weaknesses, and the key numbers. |
 | `content-practice.js` | The 90-second opening and the 37 exam questions. |
 | `content-code.js` | Notebook code for each topic, copied exactly from the notebook. |

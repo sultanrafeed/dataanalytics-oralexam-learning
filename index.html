@@ -53,7 +53,8 @@ ul { margin: 0 0 10px; padding-left: 22px; } li { margin-bottom: 6px; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; margin: 0 0 12px; }
 .sec { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 16px 4px; margin: 0 0 12px; border-left: 5px solid var(--line); }
 .sec .lbl { display: block; font-size: 13px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
-.sec.what { border-left-color: #8a8a91; } .sec.why { border-left-color: var(--accent); } .sec.got { border-left-color: var(--right); }
+.sec.what { border-left-color: #8a8a91; } .sec.ex { border-left-color: #6b5220; background: #fbf8f0; } .sec.words { border-left-color: #4b4fd1; } .sec.proj { border-left-color: var(--right); }
+.pre { background: #f7f1e3; border-radius: var(--r); padding: 10px 14px; margin: 0 0 12px; font-size: 15px; } .sec.why { border-left-color: var(--accent); } .sec.got { border-left-color: var(--right); }
 .sec.show { border-left-color: #6b5220; } .sec.say { border-left-color: var(--accent); background: var(--accent-soft); } .sec.rem { border-left-color: #8a6d2f; background: #f7f1e3; }
 .example { font-style: italic; color: var(--muted); }
 .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 10px 18px; border-radius: var(--r); border: 1px solid var(--accent); background: var(--accent); color: #fff; font-weight: 600; cursor: pointer; text-decoration: none; text-align: center; }
@@ -85,7 +86,7 @@ input[type=search] { width: 100%; min-height: 48px; padding: 10px 14px; border: 
 <header><button class="back" id="back" hidden aria-label="Back">&lsaquo; Back</button><h1 id="title">AT3 Defence Study</h1></header>
 <nav id="nav" aria-label="Main">
   <a href="#/" data-tab="home">Home</a>
-  <a href="#/topics" data-tab="topics">Topics</a>
+  <a href="#/topics" data-tab="topics">Learn</a>
   <a href="#/defs" data-tab="defs">Definitions</a>
   <a href="#/exam" data-tab="exam">Exam Qs</a>
   <a href="#/test" data-tab="test">Test yourself</a>
@@ -93,13 +94,14 @@ input[type=search] { width: 100%; min-height: 48px; padding: 10px 14px; border: 
 <main id="main" tabindex="-1"></main>
 
 <script>var CONTENT = window.CONTENT || (window.CONTENT = {});</script>
+<script src="content-basics.js"></script>
 <script src="content-topics.js"></script>
 <script src="content-practice.js"></script>
 <script src="content-code.js"></script>
 <script>
 (function () {
   'use strict';
-  var C = window.CONTENT, TOPICS = C.topics || [], GROUPS = C.groups || [], EXAM = C.practice || [], STORY = C.story, CODE = C.code || [], NUMBERS = C.numbers || [];
+  var C = window.CONTENT, BASICS = C.basics || [], BPARTS = C.basicParts || [], TOY = C.toyPeople, PREREQ = C.prereq || {}, TOPICS = C.topics || [], GROUPS = C.groups || [], EXAM = C.practice || [], STORY = C.story, CODE = C.code || [], NUMBERS = C.numbers || [];
   var KEY = 'at3-study-simple-v1', ANSWER_SECONDS = 40, STORY_SECONDS = 90, TEST_ROUND = 10;
 
   /* ---------- helpers ---------- */
@@ -116,9 +118,10 @@ input[type=search] { width: 100%; min-height: 48px; padding: 10px 14px; border: 
   function cellsText(c) { return c && c.length ? (c.length > 1 ? 'Cells ' : 'Cell ') + c.join(', ') : ''; }
 
   /* ---------- saved progress (try/catch so the app still works if storage is blocked) ---------- */
-  function fresh() { return { topics: {}, exam: {}, test: {} }; }
+  function fresh() { return { basics: {}, topics: {}, exam: {}, test: {} }; }
   var S = fresh();
   try { var raw = localStorage.getItem(KEY); if (raw) { var p = JSON.parse(raw); for (var k in p) S[k] = p[k]; } } catch (e) { /* storage blocked */ }
+  if (!S.basics) S.basics = {};
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* storage blocked */ } }
 
   /* ---------- speech + timer (timer uses timestamps, so it stays right if iOS pauses the page) ---------- */
@@ -135,16 +138,28 @@ input[type=search] { width: 100%; min-height: 48px; padding: 10px 14px; border: 
   /* ---------- pages ---------- */
   var P = {};
   function nextTopic() { for (var i = 0; i < TOPICS.length; i++) if (S.topics[TOPICS[i].id] !== 'ok') return TOPICS[i]; return null; }
+  function nextBasic() { for (var i = 0; i < BASICS.length; i++) if (S.basics[BASICS[i].id] !== 'ok') return BASICS[i]; return null; }
+  function rich(arr) {
+    return [].concat(arr || []).map(function (it) {
+      if (typeof it === 'string') return '<p>' + fmt(it) + '</p>';
+      if (it.list) return '<ul>' + it.list.map(function (x) { return '<li>' + fmt(x) + '</li>'; }).join('') + '</ul>';
+      var tb = it.toy ? TOY : it.table;
+      if (tb) return '<table style="margin-bottom:10px"><tr>' + tb.head.map(function (h) { return '<td><strong>' + fmt(h) + '</strong></td>'; }).join('') + '</tr>' + tb.rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + fmt(c) + '</td>'; }).join('') + '</tr>'; }).join('') + '</table>';
+      return '';
+    }).join('');
+  }
 
   P.home = function () {
-    var done = TOPICS.filter(function (t) { return S.topics[t.id] === 'ok'; }).length, nt = nextTopic();
+    var done = TOPICS.filter(function (t) { return S.topics[t.id] === 'ok'; }).length, nt = nextTopic(), nb = nextBasic();
+    var bdone = BASICS.filter(function (b) { return S.basics[b.id] === 'ok'; }).length;
     var nailed = EXAM.filter(function (q) { return S.exam[q.id] === 'ok'; }).length;
     return { title: 'AT3 Defence Study', html:
       '<h2>Learn your project, then practise.</h2>' +
-      '<p class="muted">Every topic gives: what it is, the key definitions, how it works, why I used it, what I got, and how to say it.</p>' +
-      (nt ? '<a class="btn full" href="#/topic/' + nt.id + '">Next topic: ' + esc(nt.title) + '</a>' : '<a class="btn full" href="#/exam">All topics done. Practise the exam questions</a>') +
-      '<p class="small" style="margin-top:10px">Topics understood: ' + done + ' of ' + TOPICS.length + '</p>' + bar(TOPICS.length ? done / TOPICS.length : 0) +
-      '<p class="small">Exam questions nailed: ' + nailed + ' of ' + EXAM.length + '</p>' + bar(EXAM.length ? nailed / EXAM.length : 0) +
+      '<p class="muted"><strong>Step 1:</strong> the basics, from zero. <strong>Step 2:</strong> my project, topic by topic. <strong>Step 3:</strong> the exam questions.</p>' +
+      (nb ? '<a class="btn full" href="#/basic/' + nb.id + '">Step 1 · Next: ' + esc(nb.title) + '</a>' : nt ? '<a class="btn full" href="#/topic/' + nt.id + '">Step 2 · Next: ' + esc(nt.title) + '</a>' : '<a class="btn full" href="#/exam">Step 3 · Practise the exam questions</a>') +
+      '<p class="small" style="margin-top:10px">Step 1, basics understood: ' + bdone + ' of ' + BASICS.length + '</p>' + bar(BASICS.length ? bdone / BASICS.length : 0) +
+      '<p class="small">Step 2, project topics understood: ' + done + ' of ' + TOPICS.length + '</p>' + bar(TOPICS.length ? done / TOPICS.length : 0) +
+      '<p class="small">Step 3, exam questions nailed: ' + nailed + ' of ' + EXAM.length + '</p>' + bar(EXAM.length ? nailed / EXAM.length : 0) +
       '<h3>How to answer any question</h3><div class="card"><p><strong>1. What</strong>: the direct answer, 1 sentence.<br><strong>2. Evidence</strong>: a number and where it is in the notebook.<br><strong>3. Why</strong>: the reason or trade-off, 1 to 2 sentences.</p><p class="small muted" style="margin:0">1 + 2 = Good (30). Add 3 = Excellent (40). About 40 seconds, then stop.</p></div>' +
       '<a class="item" href="#/story"><span class="grow"><strong>My 90-second opening</strong><br><span class="small muted">Say this first in the exam</span></span>&rsaquo;</a>' +
       '<a class="item" href="#/numbers"><span class="grow"><strong>Numbers to know</strong><br><span class="small muted">All the key results on one page</span></span>&rsaquo;</a>' +
@@ -153,7 +168,15 @@ input[type=search] { width: 100%; min-height: 48px; padding: 10px 14px; border: 
   };
 
   P.topics = function () {
-    return { title: 'Topics', html: '<h2>Topics</h2><p class="muted">Work from top to bottom. Mark a topic "I understand" when you can explain it out loud.</p>' +
+    return { title: 'Learn', html: '<h2>Learn</h2><p class="muted">Start at the top. Step 1 builds the basics one small idea at a time. Step 2 uses them to explain my project.</p>' +
+      '<h3 style="font-size:23px">Step 1: The basics</h3>' +
+      BPARTS.map(function (g) {
+        return '<h3>' + esc(g.title) + '</h3>' + BASICS.filter(function (b) { return b.part === g.id; }).map(function (b) {
+          var st = S.basics[b.id];
+          return '<a class="item" href="#/basic/' + b.id + '"><span class="tag">' + esc(b.id.slice(1)) + '</span><span class="grow">' + esc(b.title) + '</span>' + (st === 'ok' ? '<span class="tag ok">Understood</span>' : st === 'again' ? '<span class="tag again">Review</span>' : '') + '</a>';
+        }).join('');
+      }).join('') +
+      '<h3 style="font-size:23px;margin-top:36px">Step 2: My project</h3>' +
       GROUPS.map(function (g) {
         return '<h3>' + esc(g.title) + '</h3>' + TOPICS.filter(function (t) { return t.group === g.id; }).map(function (t) {
           var st = S.topics[t.id];
@@ -172,7 +195,8 @@ input[type=search] { width: 100%; min-height: 48px; padding: 10px 14px; border: 
       return '<div class="card"><p><strong>' + fmt(c.q) + '</strong></p><button class="btn light full" data-reveal="' + k + '">Say it out loud, then tap to check</button><p data-ans="' + k + '" hidden style="margin-top:10px">' + fmt(c.a) + '</p></div>';
     }).join('');
     return { title: t.title, back: '#/topics', html:
-      '<div class="kicker">' + esc((byId(GROUPS, t.group) || {}).title || '') + '</div><h2>' + esc(t.title) + '</h2>' +
+      '<div class="kicker">Step 2 · ' + esc((byId(GROUPS, t.group) || {}).title || '') + '</div><h2>' + esc(t.title) + '</h2>' +
+      ((PREREQ[t.id] || []).length ? '<div class="pre">Learn first (Step 1): ' + PREREQ[t.id].map(function (bid) { var bb = byId(BASICS, bid); return bb ? '<a href="#/basic/' + bid + '">' + esc(bb.title) + '</a>' + (S.basics[bid] === 'ok' ? ' ✓' : '') : ''; }).join(' · ') + '</div>' : '') +
       sec('what', 'What is it?', list(t.what) + (t.example ? '<p class="example">Example: ' + fmt(t.example) + '</p>' : '')) +
       (t.terms ? sec('defs', 'Key definitions', '<dl class="terms">' + t.terms.map(function (d) { return '<dt>' + fmt(d[0]) + '</dt><dd>' + fmt(d[1]) + '</dd>'; }).join('') + '</dl>') : '') +
       (t.steps ? sec('how', 'How it works', '<ol class="steps">' + t.steps.map(function (x) { return '<li>' + fmt(x) + '</li>'; }).join('') + '</ol>') : '') +
@@ -190,6 +214,28 @@ input[type=search] { width: 100%; min-height: 48px; padding: 10px 14px; border: 
         var ls = $('#listen', m); if (ls) ls.onclick = function () { speak(t.say); };
         $$('[data-reveal]', m).forEach(function (b) { b.onclick = function () { $('[data-ans="' + b.dataset.reveal + '"]', m).hidden = false; b.hidden = true; }; });
         $$('[data-mark]', m).forEach(function (b) { b.onclick = function () { S.topics[t.id] = b.dataset.mark; save(); location.hash = b.dataset.mark === 'ok' && next ? '#/topic/' + next.id : '#/topics'; }; });
+      } };
+  };
+
+  P.basic = function (id) {
+    var i = -1; BASICS.forEach(function (b, k) { if (b.id === id) i = k; });
+    if (i < 0) return P.missing();
+    var b = BASICS[i], prev = BASICS[i - 1], next = BASICS[i + 1], tp = b.project && byId(TOPICS, b.project.topic);
+    var checks = (b.check || []).map(function (c, k) {
+      return '<div class="card"><p><strong>' + fmt(c.q) + '</strong></p><button class="btn light full" data-reveal="' + k + '">Say it out loud, then tap to check</button><p data-ans="' + k + '" hidden style="margin-top:10px">' + fmt(c.a) + '</p></div>';
+    }).join('');
+    return { title: 'Basics ' + (i + 1) + ' of ' + BASICS.length, back: '#/topics', html:
+      '<div class="kicker">Step 1 · ' + esc((byId(BPARTS, b.part) || {}).title || '') + '</div><h2>' + esc(b.title) + '</h2>' +
+      sec('what', 'The idea', rich(b.idea)) +
+      sec('ex', 'Example', rich(b.example)) +
+      (b.words && b.words.length ? sec('words', 'New words', '<dl class="terms">' + b.words.map(function (w) { return '<dt>' + fmt(w[0]) + '</dt><dd>' + fmt(w[1]) + '</dd>'; }).join('') + '</dl>') : '') +
+      (b.project ? sec('proj', 'In my project', '<p>' + fmt(b.project.text) + '</p>' + (tp ? '<p class="small">Later, in Step 2: <a href="#/topic/' + tp.id + '">' + esc(tp.title) + '</a></p>' : '')) : '') +
+      '<h3>Check yourself</h3>' + checks +
+      '<div class="row"><button class="btn right" data-mark="ok">I understand</button><button class="btn wrong" data-mark="again">Review later</button></div>' +
+      '<div class="row">' + (prev ? '<a class="btn light" href="#/basic/' + prev.id + '">&lsaquo; Previous</a>' : '') + (next ? '<a class="btn light" href="#/basic/' + next.id + '">Next &rsaquo;</a>' : '<a class="btn light" href="#/topic/' + TOPICS[0].id + '">Start Step 2 &rsaquo;</a>') + '</div>',
+      after: function (m) {
+        $$('[data-reveal]', m).forEach(function (x) { x.onclick = function () { $('[data-ans="' + x.dataset.reveal + '"]', m).hidden = false; x.hidden = true; }; });
+        $$('[data-mark]', m).forEach(function (x) { x.onclick = function () { S.basics[b.id] = x.dataset.mark; save(); location.hash = x.dataset.mark === 'ok' ? (next ? '#/basic/' + next.id : '#/topic/' + TOPICS[0].id) : '#/topics'; }; });
       } };
   };
 
@@ -233,7 +279,7 @@ input[type=search] { width: 100%; min-height: 48px; padding: 10px 14px; border: 
 
   /* Test yourself: 10 quick questions from the topics' "Check yourself". Misses come back first. */
   var round = null;
-  function allChecks() { var out = []; TOPICS.forEach(function (t) { (t.check || []).forEach(function (c, k) { out.push({ id: t.id + ':' + k, topic: t, q: c.q, a: c.a }); }); (t.terms || []).forEach(function (d) { out.push({ id: t.id + ':def:' + d[0], topic: t, q: 'Define: ' + d[0], a: d[1] }); }); }); return out; }
+  function allChecks() { var out = []; BASICS.forEach(function (b) { (b.check || []).forEach(function (c, k) { out.push({ id: b.id + ':' + k, topic: b, basic: true, q: c.q, a: c.a }); }); (b.words || []).forEach(function (d) { out.push({ id: b.id + ':def:' + d[0], topic: b, basic: true, q: 'Define: ' + d[0], a: d[1] }); }); }); TOPICS.forEach(function (t) { (t.check || []).forEach(function (c, k) { out.push({ id: t.id + ':' + k, topic: t, q: c.q, a: c.a }); }); (t.terms || []).forEach(function (d) { out.push({ id: t.id + ':def:' + d[0], topic: t, q: 'Define: ' + d[0], a: d[1] }); }); }); return out; }
   P.test = function () {
     if (!round) {
       var all = allChecks();
@@ -254,7 +300,7 @@ input[type=search] { width: 100%; min-height: 48px; padding: 10px 14px; border: 
     return { title: 'Test yourself', html:
       '<p class="small muted">Question ' + (r.i + 1) + ' of ' + r.qs.length + ' · ' + esc(x.topic.title) + '</p>' + bar(r.i / r.qs.length) +
       '<div class="card"><p class="q" style="margin:0">' + fmt(x.q) + '</p></div>' +
-      (r.shown ? '<div class="card"><p style="margin:0">' + fmt(x.a) + '</p></div><div class="row"><button class="btn wrong" data-k="0">Didn\'t know</button><button class="btn right" data-k="1">Knew it</button></div><p class="small"><a href="#/topic/' + x.topic.id + '">Open the topic</a></p>'
+      (r.shown ? '<div class="card"><p style="margin:0">' + fmt(x.a) + '</p></div><div class="row"><button class="btn wrong" data-k="0">Didn\'t know</button><button class="btn right" data-k="1">Knew it</button></div><p class="small"><a href="#/' + (x.basic ? 'basic/' : 'topic/') + x.topic.id + '">Open the lesson</a></p>'
         : '<button class="btn full" id="flip">Say it out loud, then show the answer</button>'),
       after: function (m) {
         var f = $('#flip', m); if (f) f.onclick = function () { r.shown = true; render(); };
@@ -287,6 +333,7 @@ input[type=search] { width: 100%; min-height: 48px; padding: 10px 14px; border: 
   var defQuery = '';
   P.defs = function () {
     var all = [];
+    BASICS.forEach(function (b) { (b.words || []).forEach(function (d) { all.push({ term: d[0], def: d[1], topic: b, basic: true }); }); });
     TOPICS.forEach(function (t) { (t.terms || []).forEach(function (d) { all.push({ term: d[0], def: d[1], topic: t }); }); });
     all.sort(function (a, b) { return a.term.toLowerCase() < b.term.toLowerCase() ? -1 : 1; });
     return { title: 'Definitions', html: '<h2>Definitions</h2><p class="muted">Every key term, A to Z. Tap a topic to see it in context.</p>' +
@@ -297,7 +344,7 @@ input[type=search] { width: 100%; min-height: 48px; padding: 10px 14px; border: 
           var q = inp.value.trim().toLowerCase(); defQuery = inp.value;
           var hits = all.filter(function (x) { return !q || (x.term + ' ' + x.def).toLowerCase().indexOf(q) >= 0; });
           out.innerHTML = '<p class="small muted">' + hits.length + ' terms</p>' + hits.map(function (x) {
-            return '<div class="card"><strong>' + fmt(x.term) + '</strong><p style="margin:4px 0">' + fmt(x.def) + '</p><a class="small" href="#/topic/' + x.topic.id + '">' + esc(x.topic.title) + '</a></div>';
+            return '<div class="card"><strong>' + fmt(x.term) + '</strong><p style="margin:4px 0">' + fmt(x.def) + '</p><a class="small" href="#/' + (x.basic ? 'basic/' : 'topic/') + x.topic.id + '">' + (x.basic ? 'Basics: ' : '') + esc(x.topic.title) + '</a></div>';
           }).join('');
         }
         inp.oninput = draw; draw();
@@ -316,6 +363,7 @@ input[type=search] { width: 100%; min-height: 48px; padding: 10px 14px; border: 
     if (!a) page = P.home();
     else if (a === 'topics') { page = P.topics(); tab = 'topics'; }
     else if (a === 'topic') { page = P.topic(b); tab = 'topics'; }
+    else if (a === 'basic') { page = P.basic(b); tab = 'topics'; }
     else if (a === 'defs') { page = P.defs(); tab = 'defs'; }
     else if (a === 'exam') { page = P.exam(); tab = 'exam'; }
     else if (a === 'q') { page = P.question(b); tab = 'exam'; }

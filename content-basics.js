@@ -1,0 +1,327 @@
+/* content-basics.js
+   STEP 1: THE BASICS. Tiny lessons in strict order: each one only uses ideas from the lessons before it.
+   One made-up example runs through all of them: 10 people, A to J.
+   Fields:
+     idea     the idea in very simple sentences
+     example  a tiny worked example (made-up numbers, not project results)
+     words    new words introduced here [word, simple meaning] (also shown on the Definitions page)
+     project  one sentence: where this shows up in my project, and the topic id to open next
+     check    2 quick questions
+   Keep ids the same when editing, because progress is saved by id. */
+var CONTENT = window.CONTENT || (window.CONTENT = {});
+
+CONTENT.basicParts = [
+  { id: 'b-data', title: 'A. Data: what we start with' },
+  { id: 'b-model', title: 'B. Models: what a model is' },
+  { id: 'b-check', title: 'C. Checking a model: is it any good?' },
+  { id: 'b-prep', title: 'D. Getting data ready' },
+  { id: 'b-how', title: 'E. How models think' },
+  { id: 'b-fair', title: 'F. Testing fairly' }
+];
+
+/* The 10 people used in many lessons (made up). */
+CONTENT.toyPeople = {
+  head: ['Person', 'Really has diabetes?', 'Model score'],
+  rows: [
+    ['A', 'Yes', '0.9'], ['B', 'Yes', '0.8'], ['C', 'Yes', '0.6'], ['D', 'Yes', '0.3'],
+    ['E', 'No', '0.7'], ['F', 'No', '0.4'], ['G', 'No', '0.2'], ['H', 'No', '0.2'], ['I', 'No', '0.1'], ['J', 'No', '0.1']
+  ]
+};
+
+CONTENT.basics = [
+/* ---------------- A. DATA ---------------- */
+{ id: 'b1', part: 'b-data', title: 'What is data?',
+  idea: ['Data is just facts written down.',
+         'We keep it in a **table**, like a spreadsheet.',
+         'Each **row** is one person. Each **column** is one question about them.'],
+  example: ['Three people answer two questions:',
+            { table: { head: ['Person', 'High blood pressure?', 'BMI'], rows: [['A', 'Yes', '31'], ['B', 'No', '24'], ['C', 'Yes', '28']] } },
+            'This table has 3 rows (people) and 2 question columns.'],
+  words: [['Data', 'Facts written down.'], ['Table', 'Rows and columns, like a spreadsheet.'], ['Row (record)', 'One person in the table.'], ['Column', 'One question or measurement about every person.']],
+  project: { text: 'My data is a table of 63,622 people (rows) answering a health survey (columns).', topic: 'data' },
+  check: [{ q: 'In my data, what is one row?', a: 'One person.' }, { q: 'What is one column?', a: 'One question about every person, such as BMI.' }] },
+
+{ id: 'b2', part: 'b-data', title: 'The answer column and the clue columns',
+  idea: ['In a prediction problem, one column is the thing we want to guess. It is called the **target**.',
+         'All the other columns are **clues** that help us guess. They are called **features** (or attributes).'],
+  example: ['Guessing if a fruit is an apple:',
+            { list: ['Clues (features): colour, size, shape.', 'Answer (target): apple or not apple.'] }],
+  words: [['Target', 'The column we want to guess.'], ['Feature (attribute)', 'A clue column used to make the guess.']],
+  project: { text: 'My target is Diabetes_binary (has diabetes: yes or no). My features are 21 survey answers, like BMI and high blood pressure.', topic: 'project' },
+  check: [{ q: 'What is my target?', a: 'Diabetes_binary: does the person have diabetes (or prediabetes), yes or no.' }, { q: 'What is a feature?', a: 'A clue column used to guess the target.' }] },
+
+{ id: 'b3', part: 'b-data', title: 'Three kinds of columns',
+  idea: ['**Yes/no** columns: only two values. We write them as **1 (yes)** and **0 (no)**.',
+         '**Ordered categories**: groups with an order, like poor, fair, good, very good, excellent. The steps between them are not equal.',
+         '**Real numbers**: actual amounts, like BMI 31.4 or 12 days.'],
+  example: [{ list: ['High blood pressure: yes/no → 1 or 0.', 'General health: 1 (excellent) to 5 (poor) → ordered categories.', 'BMI: a real number.'] }],
+  words: [['Yes/no (binary) column', 'A column with only two values, written 1 and 0.'], ['Ordered category (ordinal)', 'Groups in order, where the gaps are not equal.'], ['Number column', 'A real amount, like BMI.']],
+  project: { text: 'Most of my 21 features are yes/no. GenHlth, Age, Education and Income are ordered categories. BMI is a number.', topic: 'at2-explore' },
+  check: [{ q: 'How do we write a yes/no answer as a number?', a: 'Yes = 1, no = 0.' }, { q: 'What kind of column is "general health, 1 to 5"?', a: 'An ordered category.' }] },
+
+{ id: 'b4', part: 'b-data', title: 'Average, middle and spread',
+  idea: ['The **mean** is the average: add everything up and divide by how many.',
+         'The **median** is the middle value when you sort them.',
+         'An **outlier** is a value far away from the rest. It pulls the mean, but not the median.',
+         'The **spread** (standard deviation, SD) says how far values usually are from the mean.'],
+  example: ['Five BMIs: 22, 25, 27, 30, 46.',
+            { list: ['Mean = (22 + 25 + 27 + 30 + 46) / 5 = 150 / 5 = **30**.', 'Median = the middle one = **27**.', '46 is an outlier: it pulled the mean up from 27 to 30.'] }],
+  words: [['Mean', 'The average: total divided by how many.'], ['Median', 'The middle value when sorted.'], ['Outlier', 'A value far from the rest.'], ['Standard deviation (SD)', 'How far values usually are from the mean.']],
+  project: { text: '231 people had BMI above 60 (outliers). I kept them but capped BMI at 60.', topic: 'cleaning' },
+  check: [{ q: 'Mean of 2, 4, 6?', a: '(2 + 4 + 6) / 3 = 4.' }, { q: 'Which is pulled by an outlier: mean or median?', a: 'The mean.' }] },
+
+/* ---------------- B. MODELS ---------------- */
+{ id: 'b5', part: 'b-model', title: 'What is a model?',
+  idea: ['A **model** is a rule that makes a guess (a **prediction**) from the clues.',
+         'A very simple model could be: "If BMI is over 30 and blood pressure is high, guess yes."',
+         'A good model guesses right most of the time on people it has never seen.'],
+  example: ['Rule: "Guess yes if high blood pressure = 1."',
+            { list: ['Person A (blood pressure 1) → guess yes.', 'Person B (blood pressure 0) → guess no.'] }],
+  words: [['Model', 'A rule that makes a guess from the clues.'], ['Prediction', 'The model\'s guess.']],
+  project: { text: 'I built 9 different models to guess diabetes from the 21 survey answers.', topic: 'project' },
+  check: [{ q: 'What is a model, in one sentence?', a: 'A rule that guesses the target from the clues.' }, { q: 'When is a model good?', a: 'When it guesses right on people it has never seen.' }] },
+
+{ id: 'b6', part: 'b-model', title: 'Machine learning: the computer finds the rule',
+  idea: ['Writing the rule by hand is hard. In **machine learning**, the computer finds the rule itself, from examples.',
+         'We give it many people **with the answer known**. It learns the pattern. This is called **training**.',
+         'Learning from examples with known answers is called **supervised learning**. Guessing yes/no is called **classification**.'],
+  example: ['A child learns "dog" after seeing many pictures labelled "dog" and "not dog". Nobody writes the rule; the child finds it.'],
+  words: [['Machine learning', 'The computer learns the rule from examples.'], ['Training', 'The step where the model learns from examples.'], ['Supervised learning', 'Learning from examples where the answer is known.'], ['Classification', 'Guessing a group (like yes/no), not a number.']],
+  project: { text: 'My project is supervised binary classification: the answers are known, and the guess is yes or no.', topic: 'basics' },
+  check: [{ q: 'What does "supervised" mean?', a: 'The training examples come with the right answer.' }, { q: 'What is training?', a: 'The model learning the pattern from examples.' }] },
+
+{ id: 'b7', part: 'b-model', title: 'Probability: a score from 0 to 1',
+  idea: ['Most models don\'t just say yes or no. They give a **score** from 0 to 1: how likely the answer is "yes".',
+         '0 = surely no. 1 = surely yes. 0.5 = could go either way.',
+         'This score is called a **probability**.'],
+  example: ['Our 10 made-up people, with the model\'s score for each:', { toy: true },
+            'The model thinks A (0.9) is very likely to have diabetes, and I (0.1) is very unlikely.'],
+  words: [['Probability (score)', 'A number from 0 to 1 saying how likely "yes" is.']],
+  project: { text: 'My best model gives every person a probability of having diabetes.', topic: 'cutoff' },
+  check: [{ q: 'What does a score of 0.9 mean?', a: 'Very likely yes.' }, { q: 'What does 0.5 mean?', a: 'Could go either way.' }] },
+
+{ id: 'b8', part: 'b-model', title: 'The cut-off: turning a score into yes or no',
+  idea: ['To make a final yes/no decision, we pick a line called the **cut-off** (or threshold).',
+         'Score **above** the cut-off → predict yes. **Below** → predict no.',
+         'The usual cut-off is 0.5, but we can move it.'],
+  example: ['With a cut-off of 0.5, using the 10 people:', { list: ['Predicted yes: A (0.9), B (0.8), E (0.7), C (0.6).', 'Predicted no: everyone else (F, D, G, H, I, J).'] }],
+  words: [['Cut-off (threshold)', 'The line that turns a score into yes or no.']],
+  project: { text: 'I lowered my cut-off from 0.5 to 0.27, to catch more people with diabetes.', topic: 'cutoff' },
+  check: [{ q: 'Cut-off 0.5: is a score of 0.6 yes or no?', a: 'Yes, because it is above 0.5.' }, { q: 'What is the usual cut-off?', a: '0.5.' }] },
+
+{ id: 'b9', part: 'b-model', title: 'Practice questions vs the final exam',
+  idea: ['If a model is tested on the same people it learned from, it can look perfect just by remembering them.',
+         'So we lock some people away at the start: the **test set**. The model never sees them while learning.',
+         'At the very end, we test once on them. That score is **honest**.',
+         'The rest, used for learning and choosing, is the **development set**.'],
+  example: ['A student who practises with past papers and then sits a new exam. If they had seen the exam paper while practising, their score would mean nothing.'],
+  words: [['Test set', 'People locked away and used once at the end, for an honest score.'], ['Development set', 'Everyone else: used for learning and choosing.'], ['Train/test split', 'Dividing the data into these two parts at the start.']],
+  project: { text: 'I locked away 20% (12,725 people) as my test set and used it only once.', topic: 'split' },
+  check: [{ q: 'Why lock a test set away?', a: 'So the final score is honest: the model never saw those people.' }, { q: 'How often is the test set used?', a: 'Once, at the end.' }] },
+
+{ id: 'b10', part: 'b-model', title: 'Memorising vs understanding',
+  idea: ['A model that **memorises** the training people, including their random quirks, does badly on new people. This is **overfitting**.',
+         'A model that is **too simple** misses the real pattern. This is **underfitting**.',
+         'We want the middle: a model that learned the real pattern.',
+         'Warning sign of overfitting: a great training score but a much worse score on new people. The difference is the **gap**.'],
+  example: ['Student 1 memorises last year\'s answers word for word: fails when the questions change (overfitting).',
+            'Student 2 only learns "the answer is usually C": fails everything (underfitting).'],
+  words: [['Overfitting', 'Memorising the training data, so new data scores worse.'], ['Underfitting', 'Too simple: misses the real pattern.'], ['Gap', 'Training score minus score on new people. Big gap = overfitting.']],
+  project: { text: 'My random forest had the biggest gap (0.032); my chosen model\'s gap was small (0.012).', topic: 'overfitting' },
+  check: [{ q: 'What is overfitting?', a: 'Memorising the training data, so it does worse on new people.' }, { q: 'What warns you about overfitting?', a: 'A big gap between the training score and the score on new data.' }] },
+
+/* ---------------- C. CHECKING A MODEL ---------------- */
+{ id: 'b11', part: 'b-check', title: 'Four kinds of right and wrong',
+  idea: ['For each person, compare the guess with the truth. There are only 4 possibilities:',
+         '**True positive (TP)**: has diabetes, we said yes. Caught.',
+         '**True negative (TN)**: no diabetes, we said no. Correctly cleared.',
+         '**False positive (FP)**: no diabetes, but we said yes. A false alarm.',
+         '**False negative (FN)**: has diabetes, but we said no. Missed. The dangerous one.',
+         'Put the counts in a 2×2 table: the **confusion matrix**.'],
+  example: ['The 10 people, cut-off 0.5:', { toy: true },
+            { list: ['TP = A, B, C → **3** (sick, said yes).', 'FN = D (0.3) → **1** (sick, said no).', 'FP = E (0.7) → **1** (healthy, said yes).', 'TN = F, G, H, I, J → **5** (healthy, said no).'] },
+            { table: { head: ['', 'Guessed no', 'Guessed yes'], rows: [['Really no', 'TN 5', 'FP 1'], ['Really yes', 'FN 1', 'TP 3']] } }],
+  words: [['True positive (TP)', 'Has it, and we said yes.'], ['True negative (TN)', 'Doesn\'t have it, and we said no.'], ['False positive (FP)', 'Doesn\'t have it, but we said yes: a false alarm.'], ['False negative (FN)', 'Has it, but we said no: a miss.'], ['Confusion matrix', 'The 2×2 table of TP, TN, FP and FN.']],
+  project: { text: 'My test set at cut-off 0.5: TN 4,534 · FP 1,829 · FN 1,287 · TP 5,075.', topic: 'confusion' },
+  check: [{ q: 'What is a false negative?', a: 'Someone who has diabetes but the model said no: a miss.' }, { q: 'What is a false positive?', a: 'Someone without diabetes the model said yes to: a false alarm.' }] },
+
+{ id: 'b12', part: 'b-check', title: 'Accuracy: how often right overall',
+  idea: ['**Accuracy** = right guesses / all guesses = (TP + TN) / everyone.',
+         'Careful: if a disease is rare, a model that always says "no" can have high accuracy and be useless.',
+         'Accuracy is fair when yes and no are equally common.'],
+  example: ['10 people: TP 3 + TN 5 = 8 right. Accuracy = 8 / 10 = **80%**.',
+            'Trap: if only 1 in 100 people were sick, always saying "no" would be 99% accurate but catch nobody.'],
+  words: [['Accuracy', '(TP + TN) / everyone: the share of right guesses.']],
+  project: { text: 'My data is exactly 50/50, so accuracy is fair. My accuracy was 75.5%.', topic: 'confusion' },
+  check: [{ q: 'Accuracy formula?', a: '(TP + TN) / everyone.' }, { q: 'When can accuracy mislead?', a: 'When one class is rare.' }] },
+
+{ id: 'b13', part: 'b-check', title: 'Recall: did we catch the sick people?',
+  idea: ['**Recall** = of all the people who really have diabetes, how many did we catch?',
+         'Recall = TP / (TP + FN). Also called **sensitivity** or **true positive rate (TPR)**.',
+         'For screening, recall matters a lot: a miss is dangerous.'],
+  example: ['4 people really have diabetes (A, B, C, D). We caught 3 (A, B, C). Recall = 3 / 4 = **75%**.'],
+  words: [['Recall (sensitivity, TPR)', 'TP / (TP + FN): the share of sick people we caught.']],
+  project: { text: 'My recall at cut-off 0.5 was 79.8%: about 4 in 5 people with diabetes caught.', topic: 'confusion' },
+  check: [{ q: 'Recall in plain words?', a: 'Of the people who really have it, how many did we catch?' }, { q: 'Formula?', a: 'TP / (TP + FN).' }] },
+
+{ id: 'b14', part: 'b-check', title: 'Precision: were our "yes" answers right?',
+  idea: ['**Precision** = of everyone we said "yes" to, how many really have it?',
+         'Precision = TP / (TP + FP).',
+         'Low precision = many false alarms.'],
+  example: ['We said yes to 4 people (A, B, C, E). 3 really have it. Precision = 3 / 4 = **75%**. E was the false alarm.'],
+  words: [['Precision', 'TP / (TP + FP): the share of our "yes" answers that were right.']],
+  project: { text: 'My precision at cut-off 0.5 was 73.5%.', topic: 'confusion' },
+  check: [{ q: 'Precision in plain words?', a: 'Of the people we flagged, how many really have it?' }, { q: 'Recall vs precision?', a: 'Recall: did we catch them all? Precision: were our yeses right?' }] },
+
+{ id: 'b15', part: 'b-check', title: 'Specificity and false alarms',
+  idea: ['**Specificity** = of all the healthy people, how many did we correctly clear? TN / (TN + FP).',
+         '**False positive rate (FPR)** = the share of healthy people we wrongly flagged = 1 − specificity.',
+         '**F1** is one number that balances precision and recall.'],
+  example: ['6 healthy people (E to J). We cleared 5. Specificity = 5 / 6 = **83%**. FPR = 1 / 6 = **17%** (only E).'],
+  words: [['Specificity', 'TN / (TN + FP): the share of healthy people correctly cleared.'], ['False positive rate (FPR)', 'The share of healthy people wrongly flagged: 1 − specificity.'], ['F1', 'One number balancing precision and recall.']],
+  project: { text: 'My specificity was 71.3% and F1 was 0.765.', topic: 'confusion' },
+  check: [{ q: 'Specificity in plain words?', a: 'Of the healthy people, how many did we correctly clear?' }, { q: 'FPR = ?', a: '1 − specificity: the share of healthy people wrongly flagged.' }] },
+
+{ id: 'b16', part: 'b-check', title: 'Moving the cut-off changes everything',
+  idea: ['Lower the cut-off → more people get "yes" → **recall goes up** (fewer misses) but **precision goes down** (more false alarms).',
+         'Raise it → the opposite.',
+         'Which is better depends on which mistake costs more.'],
+  example: [{ toy: true }, 'Same 10 people, cut-off lowered from 0.5 to **0.25**:',
+            { list: ['Predicted yes: A, B, C, D, E, F (6 people).', 'TP = 4 (all sick caught), FP = 2 (E, F), FN = 0, TN = 4.', 'Recall = 4 / 4 = **100%** (was 75%).', 'Precision = 4 / 6 = **67%** (was 75%).'] }],
+  words: [['Precision-recall trade-off', 'Lower cut-off: recall up, precision down. Higher cut-off: the opposite.']],
+  project: { text: 'Lowering my cut-off to 0.27 lifted recall from 79.8% to 93.9%, while precision fell from 73.5% to 65.4%.', topic: 'cutoff' },
+  check: [{ q: 'Lower the cut-off: what happens to recall and precision?', a: 'Recall goes up, precision goes down.' }, { q: 'Why lower it for screening?', a: 'A missed case costs more than one extra test.' }] },
+
+{ id: 'b17', part: 'b-check', title: 'Ranking and AUC',
+  idea: ['Forget the cut-off for a moment. Ask a simpler question: does the model give **sick people higher scores** than healthy people?',
+         'Take every pair of one sick person and one healthy person. Count how often the sick one has the higher score.',
+         'That share is the **AUC**. 1.0 = always right. 0.5 = a coin flip. Higher is better.',
+         'AUC doesn\'t depend on any cut-off. It measures how well the model **ranks** people.'],
+  example: ['The same 10 people:', { toy: true }, '4 sick × 6 healthy = **24 pairs**. Sick one scores higher in:',
+            { list: ['A (0.9): beats all 6 healthy → 6', 'B (0.8): beats all 6 → 6', 'C (0.6): beats 5 (loses to E 0.7) → 5', 'D (0.3): beats 4 (G, H, I, J) → 4'] },
+            'Total = 21 of 24. **AUC = 21 / 24 = 0.875.**'],
+  words: [['Ranking', 'Ordering people from highest to lowest score.'], ['AUC', 'The chance a random sick person gets a higher score than a random healthy one. 0.5 = coin flip, 1.0 = perfect.']],
+  project: { text: 'My main measure was AUC. My best model scored 0.835 on the test set.', topic: 'auc' },
+  check: [{ q: 'What does AUC 0.5 mean?', a: 'No better than a coin flip.' }, { q: 'AUC in one sentence?', a: 'The chance a random sick person scores higher than a random healthy person.' }] },
+
+{ id: 'b18', part: 'b-check', title: 'The ROC curve: every cut-off at once',
+  idea: ['Try every cut-off from 1 down to 0. At each one, write down recall (TPR) and the false alarm rate (FPR).',
+         'Plot them: FPR across, TPR up. That line is the **ROC curve**.',
+         'The area under it is the **AUC** from the last lesson. A curve hugging the top-left corner = a good model. The diagonal line = a coin flip.'],
+  example: ['From our 10 people: at cut-off 0.5, TPR = 75% and FPR = 17%. At 0.25, TPR = 100% and FPR = 33%. Each cut-off is one point on the curve.'],
+  words: [['ROC curve', 'TPR plotted against FPR for every cut-off.'], ['Area under the curve (AUC)', 'The area under the ROC curve: the same AUC as the pair-counting idea.']],
+  project: { text: 'Cell 55 draws the ROC curves of all my models; they nearly sit on top of each other.', topic: 'auc' },
+  check: [{ q: 'What is on each axis of a ROC curve?', a: 'False positive rate across, true positive rate (recall) up.' }, { q: 'What shape is a good ROC curve?', a: 'Hugging the top-left corner.' }] },
+
+/* ---------------- D. GETTING DATA READY ---------------- */
+{ id: 'b19', part: 'b-prep', title: 'Cheating clues (leakage)',
+  idea: ['Sometimes a column secretly gives away the answer. The model looks perfect but has learned nothing real.',
+         'This is **leakage**. You must find and remove it.',
+         'Another kind: letting the test people influence the learning, even a little.'],
+  example: ['If exam papers were numbered so that all "pass" students got low numbers, a teacher could "predict" passes from the paper number alone. Useless for next year.'],
+  words: [['Leakage', 'Information that gives away the answer, or test data sneaking into learning. It makes scores look too good.']],
+  project: { text: 'My ID column, pid, was sorted by the answer. One question on pid alone scored a perfect AUC of 1.0, so I removed it.', topic: 'pid' },
+  check: [{ q: 'What is leakage?', a: 'A clue that secretly gives away the answer, or test data sneaking into learning.' }, { q: 'Why is a perfect score suspicious?', a: 'It often means a cheating clue (leak).' }] },
+
+{ id: 'b20', part: 'b-prep', title: 'Making columns fair (scaling)',
+  idea: ['Some models measure how **far apart** two people are. Big-number columns would drown out small ones.',
+         '**Scaling** puts all columns on a similar size.',
+         '**Z-score**: (value − mean) / SD, which means "how many SDs from average". **Min-max**: squeeze into 0 to 1.'],
+  example: ['Person 1: BMI 30, blood pressure 1. Person 2: BMI 26, blood pressure 0.',
+            'BMI differs by 4, blood pressure by only 1. Without scaling, BMI would count 4 times more, even though blood pressure matters a lot.'],
+  words: [['Scaling (normalisation)', 'Putting columns on a similar size.'], ['Z-score', '(value − mean) / SD: how many SDs from average.'], ['Min-max', '(value − min) / (max − min): squeezed into 0 to 1.']],
+  project: { text: 'I used z-score scaling for the models that measure distance or add up weights.', topic: 'scaling' },
+  check: [{ q: 'Why scale?', a: 'So big-number columns don\'t drown out small ones.' }, { q: 'Z-score formula?', a: '(value − mean) / SD.' }] },
+
+{ id: 'b21', part: 'b-prep', title: 'Turning categories into numbers',
+  idea: ['Models need numbers. A yes/no column becomes one 0/1 column.',
+         'For ordered categories, keeping codes like 1, 2, 3 can mislead some models into thinking 3 is "three times" 1.',
+         '**One-hot encoding** gives each category its own 0/1 column instead.'],
+  example: ['General health 1 to 3 becomes three columns:',
+            { table: { head: ['Health code', 'Health_1', 'Health_2', 'Health_3'], rows: [['1', '1', '0', '0'], ['2', '0', '1', '0'], ['3', '0', '0', '1']] } },
+            'One light on, all others off.'],
+  words: [['Encoding', 'Turning categories into numbers.'], ['One-hot encoding', 'One 0/1 column per category.']],
+  project: { text: 'I turned Sex into one 0/1 column, and one-hot encoded the ordered codes for the straight-line models.', topic: 'onehot' },
+  check: [{ q: 'What does one-hot encoding do?', a: 'Gives each category its own 0/1 column.' }, { q: 'Why not just keep codes 1, 2, 3?', a: 'Some models would think 3 is "three times" 1.' }] },
+
+/* ---------------- E. HOW MODELS THINK ---------------- */
+{ id: 'b22', part: 'b-how', title: 'Model idea 1: asking yes/no questions (tree)',
+  idea: ['A **decision tree** asks a series of yes/no questions, like the game 20 Questions.',
+         'Each question splits people into groups. It picks the question that makes the groups as "pure" as possible (mostly one answer).',
+         'At the end of the questions, each group gets a guess.'],
+  example: ['"High blood pressure?" → yes → "BMI over 30?" → yes → guess **diabetes**.',
+            'Too many questions = memorising (overfitting).'],
+  words: [['Decision tree', 'A model that asks yes/no questions in a row.'], ['Split', 'One question that divides people into two groups.']],
+  project: { text: 'My decision tree scored AUC 0.816. Groups of trees (ensembles) did better.', topic: 'tree' },
+  check: [{ q: 'How does a tree decide?', a: 'It asks yes/no questions, each making the groups purer.' }, { q: 'What happens if a tree asks too many questions?', a: 'It memorises the data (overfitting).' }] },
+
+{ id: 'b23', part: 'b-how', title: 'Model idea 2: looking at neighbours (k-NN)',
+  idea: ['To guess for a new person, find the **k most similar people** we already know, and let them vote.',
+         'Similar = close together. **Distance** measures how far apart two people are.',
+         'That is why scaling matters here (lesson D).'],
+  example: ['New person. Their 5 nearest people: 4 have diabetes, 1 doesn\'t. Vote: 4 to 1 → guess **yes**.'],
+  words: [['k-NN (k-nearest neighbours)', 'Guess by a vote of the k most similar people.'], ['Distance', 'How far apart (how different) two people are.']],
+  project: { text: 'My k-NN worked best with 201 neighbours, scoring AUC 0.820.', topic: 'knn' },
+  check: [{ q: 'How does k-NN guess?', a: 'The k most similar people vote.' }, { q: 'Why does it need scaling?', a: 'It measures distance, so big-number columns would dominate.' }] },
+
+{ id: 'b24', part: 'b-how', title: 'Model idea 3: adding up points (straight-line models)',
+  idea: ['Give each clue some **points** (a **weight**). Add them up for each person.',
+         'Turn the total into a probability from 0 to 1 with an S-shaped curve (the **sigmoid**).',
+         'This is **logistic regression**. Because it just adds points, it draws a **straight-line** boundary between yes and no.'],
+  example: ['Made-up rule: points = 2 × (high blood pressure) + 0.1 × BMI − 5.',
+            { list: ['Person with high blood pressure and BMI 30: 2 + 3 − 5 = 0 → probability 0.5.', 'More points → closer to 1. Fewer → closer to 0.'] }],
+  words: [['Weight', 'How many points a clue is worth.'], ['Sigmoid', 'An S-shaped curve that turns any total into a probability.'], ['Logistic regression', 'Add up weighted clues, then turn the total into a probability.'], ['Linear (straight-line) model', 'A model whose yes/no boundary is a straight line.']],
+  project: { text: 'My logistic regression scored AUC 0.826. The MLP and SVM are related ideas.', topic: 'logreg' },
+  check: [{ q: 'How does logistic regression work?', a: 'Adds up weighted clues, then the sigmoid turns the total into a probability.' }, { q: 'What shape is its boundary?', a: 'A straight line.' }] },
+
+{ id: 'b25', part: 'b-how', title: 'Model idea 4: many models together',
+  idea: ['An **ensemble** combines many models. Like asking a crowd instead of one person.',
+         '**Bagging / random forest**: many trees built side by side, each on a random sample of people, then averaged. It makes results steadier.',
+         '**Boosting**: small trees built one after another, each fixing the mistakes of the ones before.',
+         '**Voting**: average the scores of a few different models.'],
+  example: ['100 people guess a cow\'s weight. Each guess is off, but the average is close (bagging).',
+            'A student who, after every practice test, studies only what they got wrong (boosting).'],
+  words: [['Ensemble', 'Many models combined into one.'], ['Bagging', 'Many trees side by side on random samples, averaged.'], ['Random forest', 'Bagging plus random clues at each question.'], ['Boosting', 'Small trees one after another, each fixing earlier mistakes.'], ['Soft voting', 'Averaging the probabilities of a few different models.']],
+  project: { text: 'Boosting was my best model (AUC 0.829 in cross-validation, 0.835 on test).', topic: 'boosting' },
+  check: [{ q: 'Bagging vs boosting in one line?', a: 'Bagging: trees side by side, averaged. Boosting: trees one after another, fixing mistakes.' }, { q: 'What is an ensemble?', a: 'Many models combined.' }] },
+
+/* ---------------- F. TESTING FAIRLY ---------------- */
+{ id: 'b26', part: 'b-fair', title: 'Settings you choose (tuning)',
+  idea: ['Each model has **settings** you choose before learning, like how many questions a tree may ask, or k in k-NN. These are **hyper-parameters**.',
+         'The things the model learns itself (like the weights) are **parameters**.',
+         '**Tuning** = trying many settings and keeping the one that scores best. **Grid search** tries every combination; **random search** tries a random handful.'],
+  example: ['Baking: oven temperature and time are the settings you choose (hyper-parameters). How the cake rises is learned.'],
+  words: [['Hyper-parameter', 'A setting you choose before learning.'], ['Parameter', 'Something the model learns itself, like a weight.'], ['Tuning', 'Trying settings and keeping the best.'], ['Grid search', 'Try every combination of settings.'], ['Random search', 'Try a random handful of combinations.']],
+  project: { text: 'I tuned every model with grid or random search, all scored the same way.', topic: 'search' },
+  check: [{ q: 'Hyper-parameter vs parameter?', a: 'Hyper-parameters are chosen by you; parameters are learned by the model.' }, { q: 'Grid vs random search?', a: 'Grid tries every combination; random tries a random handful.' }] },
+
+{ id: 'b27', part: 'b-fair', title: 'Testing 5 times (cross-validation)',
+  idea: ['To choose settings, we need a score, but we must not touch the test set. So we test inside the development set.',
+         'One split could be lucky. Instead, cut the development data into 5 parts (**folds**). Learn on 4, test on 1. Rotate 5 times. Average.',
+         'This is **5-fold cross-validation (CV)**. **Stratified** means each part keeps the same yes/no mix.'],
+  example: ['10 people → 5 folds of 2. Round 1: learn on folds 2-5, test on fold 1. Round 2: learn on 1, 3, 4, 5, test on fold 2. And so on, 5 times. Average the 5 scores.'],
+  words: [['Cross-validation (CV)', 'Split into parts, learn on all but one, test on the one left out, rotate, average.'], ['Fold', 'One of the parts in cross-validation.'], ['Stratified', 'Each part keeps the same yes/no mix.']],
+  project: { text: 'Every model was scored with the same stratified 5-fold cross-validation.', topic: 'cv' },
+  check: [{ q: 'How does 5-fold CV work?', a: 'Cut into 5, learn on 4, test on 1, rotate 5 times, average.' }, { q: 'Why not just one split?', a: 'One split could be lucky or unlucky.' }] },
+
+{ id: 'b28', part: 'b-fair', title: 'Luck or a real difference?',
+  idea: ['Scores wobble a little by chance. A tiny difference may just be luck.',
+         'The **standard error (SE)** says how much an average could wobble by chance. If two models are closer than that, call it a **tie**.',
+         'The **bootstrap** re-draws the test people at random many times and recomputes the score, to see how much it wobbles. The middle 95% of those scores is the **95% confidence interval**.',
+         'When tied, pick the **simpler** model.'],
+  example: ['Flip a coin 10 times and get 6 heads. That doesn\'t prove the coin is unfair; it may just be luck.',
+            'Two runners finish 0.01 s apart, but the stopwatch error is 0.05 s: you can\'t honestly say who won.'],
+  words: [['Standard error (SE)', 'How much an average could wobble by chance.'], ['Tie', 'A difference smaller than the chance wobble.'], ['Bootstrap', 'Re-drawing the data at random many times to see how much a score wobbles.'], ['95% confidence interval', 'The range where the score would land 95% of the time.']],
+  project: { text: 'Boosting and soft voting were tied, so I chose boosting, the simpler one.', topic: 'winner' },
+  check: [{ q: 'Why might a tiny difference not matter?', a: 'It may be just chance (smaller than the standard error).' }, { q: 'When two models tie, which do you pick?', a: 'The simpler one.' }] }
+];
+
+/* Which basics to learn before each project topic. */
+CONTENT.prereq = {
+  basics: ['b6'], project: ['b2', 'b5', 'b6'], marking: [], data: ['b1', 'b2', 'b3'], pid: ['b19'], split: ['b9'], cv: ['b27'],
+  pipelines: ['b19', 'b20'], cleaning: ['b4'], scaling: ['b4', 'b20'], onehot: ['b3', 'b21'], features: ['b2'], featuresets: ['b2'],
+  baseline: ['b5', 'b17'], tree: ['b22', 'b10'], knn: ['b23', 'b20'], logreg: ['b24', 'b7'], mlp: ['b24'], svm: ['b24'],
+  bagging: ['b25', 'b22'], boosting: ['b25'], voting: ['b25'], search: ['b26'], overfitting: ['b10'],
+  auc: ['b17', 'b18'], confusion: ['b11', 'b12', 'b13', 'b14', 'b15'], bootstrap: ['b28'], winner: ['b28'], importance: ['b5'],
+  cutoff: ['b8', 'b16'], limits: ['b7'], 'at2-explore': ['b3', 'b4'], 'at2-prep': ['b4', 'b20']
+};
